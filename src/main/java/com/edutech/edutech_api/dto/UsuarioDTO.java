@@ -1,3 +1,4 @@
+//Catalina Rosales->rataxikita
 package com.edutech.edutech_api.dto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -62,3 +63,4 @@ public class UsuarioDTO {
 
         
 }
+//Catalina Rosales->rataxikita

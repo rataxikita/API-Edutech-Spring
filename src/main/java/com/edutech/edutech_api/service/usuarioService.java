@@ -1,3 +1,5 @@
+// Catalina Rosales->rataxikita
+
 package com.edutech.edutech_api.service;
 
 import com.edutech.edutech_api.model.Usuario;
@@ -31,10 +33,9 @@ public class UsuarioService {
     public Usuario actualizarUsuario(Long id, Usuario datosActualizados) {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario != null) {
-            usuario.setNombre(datosActualizados.getNombre());
             usuario.setCorreo(datosActualizados.getCorreo());
             usuario.setClave(datosActualizados.getClave());
-            usuario.setRol(datosActualizados.getRol());
+            usuario.setEstado(datosActualizados.isEstado());
             return usuarioRepository.save(usuario);
         }
         return null;
@@ -43,13 +44,7 @@ public class UsuarioService {
     public void eliminarUsuario(Long id) {
         usuarioRepository.deleteById(id);
     }
-
-    public Usuario desactivarUsuario(Long id) {
-        Usuario usuario = usuarioRepository.findById(id).orElse(null);
-        if (usuario != null) {
-            usuario.setActivo(false);
-            return usuarioRepository.save(usuario);
-        }
-        return null;
-    }
 }
+
+// Catalina Rosales->rataxikita
+
