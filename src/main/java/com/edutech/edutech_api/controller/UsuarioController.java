@@ -1,74 +1,104 @@
-package com.edutech.edutech_api.controller;
-
-import java.util.List;
-
+//Catalina Rosales->rataxikita
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.edutech.edutech_api.dto.UsuarioDTO;
 import com.edutech.edutech_api.model.Usuario;
-import com.edutech.edutech_api.service.UsuarioService;
+import com.edutech.edutech_api.repository.UsuarioRepository;
 
-import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UsuarioRepository usuarioRepo;
 
-    @PostMapping
-    public ResponseEntity<?> crearUsuario(@RequestBody @Valid UsuarioDTO dto) {
-        Usuario nuevo = new Usuario();
-        nuevo.setNombre(dto.getNombre());
-        nuevo.setCorreo(dto.getCorreo());
-        nuevo.setClave(dto.getClave());
-        nuevo.setRol(dto.getRol());
-        nuevo.setActivo(true);
-
-        Usuario creado = usuarioService.crearUsuario(nuevo);
-        if (creado == null) {
-            return ResponseEntity.badRequest().body("El correo ya está registrado.");
+    // REGISTRO
+    @PostMapping("/registro")
+    public ResponseEntity<?> registrar(@RequestBody Usuario usuario) {
+        if (usuario.getCorreo() == null || usuario.getClave() == null) {
+            return ResponseEntity.badRequest().body("Faltan correo o clave");
         }
-        return ResponseEntity.ok(creado);
+
+        Usuario existente = usuarioRepo.findByCorreo(usuario.getCorreo());
+        if (existente != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Correo ya registrado");
+        }
+
+        usuario.setEstado(true); 
+        return ResponseEntity.ok(usuarioRepo.save(usuario));
     }
 
+    // LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> datos) {
+        String correo = datos.get("correo");
+        String clave = datos.get("clave");
+
+        if (correo == null || clave == null) {
+            return ResponseEntity.badRequest().body("Faltan datos de acceso");
+        }
+
+        Usuario usuario = usuarioRepo.findByCorreoAndClave(correo, clave);
+
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
+        }
+
+        if (!usuario.isEstado()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario inactivo");
+        }
+
+        return ResponseEntity.ok(usuario);
+    }
+
+    // LISTAR TODOS
     @GetMapping
-    public List<Usuario> obtenerUsuarios() {
-        return usuarioService.obtenerUsuarios();
+    public ResponseEntity<List<Usuario>> listarUsuarios() {
+        return ResponseEntity.ok(usuarioRepo.findAll());
     }
 
+    // OBTENER UNO
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
+        Usuario usuario = usuarioRepo.findById(id).orElse(null);
+        if (usuario == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(usuario);
+    }
+
+    // ACTUALIZAR CLAVE Y ESTADO
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Long id, @RequestBody @Valid UsuarioDTO dto) {
-        Usuario datos = new Usuario();
-        datos.setNombre(dto.getNombre());
-        datos.setCorreo(dto.getCorreo());
-        datos.setClave(dto.getClave());
-        datos.setRol(dto.getRol());
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Usuario datos) {
+        Usuario usuario = usuarioRepo.findById(id).orElse(null);
+        if (usuario == null) return ResponseEntity.notFound().build();
 
-        Usuario actualizado = usuarioService.actualizarUsuario(id, datos);
-        if (actualizado != null) {
-            return ResponseEntity.ok(actualizado);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        if (datos.getClave() != null) usuario.setClave(datos.getClave());
+        usuario.setEstado(datos.isEstado()); // siempre actualiza el estado
+
+        return ResponseEntity.ok(usuarioRepo.save(usuario));
     }
 
+    // DESHABILITAR USUARIO (estado = false)
+    @PutMapping("/{id}/deshabilitar")
+    public ResponseEntity<?> deshabilitar(@PathVariable Long id) {
+        Usuario usuario = usuarioRepo.findById(id).orElse(null);
+        if (usuario == null) return ResponseEntity.notFound().build();
+
+        usuario.setEstado(false);
+        return ResponseEntity.ok(usuarioRepo.save(usuario));
+    }
+
+    // ELIMINAR
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
-        usuarioService.eliminarUsuario(id);
-        return ResponseEntity.noContent().build();
-    }
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+        if (!usuarioRepo.existsById(id)) return ResponseEntity.notFound().build();
 
-    @PutMapping("/{id}/desactivar")
-    public ResponseEntity<?> desactivarUsuario(@PathVariable Long id) {
-        Usuario desactivado = usuarioService.desactivarUsuario(id);
-        if (desactivado != null) {
-            return ResponseEntity.ok(desactivado);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        usuarioRepo.deleteById(id);
+        return ResponseEntity.ok("Usuario eliminado");
     }
 }
+//Catalina Rosales->rataxikita
