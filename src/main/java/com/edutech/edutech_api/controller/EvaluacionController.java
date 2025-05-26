@@ -2,6 +2,7 @@
 package com.edutech.edutech_api.controller;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.edutech.edutech_api.model.Curso;
 import com.edutech.edutech_api.model.Evaluacion;
+import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.repository.EvaluacionRepository;
 
 @RestController
@@ -27,12 +31,10 @@ public class EvaluacionController {
     @PostMapping("/{id}/evaluaciones")
     public ResponseEntity<?> crearEvaluacion(@PathVariable Long id, @RequestBody Evaluacion ev) {
         Curso curso = cursoRepo.findById(ev.getCurso().getId()).orElse(null);
-
         if (curso == null || !curso.getInstructor().getId().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No puedes crear evaluación en este curso");
         }
-
-        return ResponseEntity.ok(evaluacionRepo.save(ev));
+            return ResponseEntity.ok(evaluacionRepo.save(ev));
     }
 
     @GetMapping("/{id}/evaluaciones")

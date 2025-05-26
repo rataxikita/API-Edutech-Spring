@@ -2,15 +2,16 @@
 
 package com.edutech.edutech_api.service;
 
-import com.edutech.edutech_api.model.Usuario;
-import com.edutech.edutech_api.repository.UsuarioRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.edutech.edutech_api.model.Usuario;
+import com.edutech.edutech_api.repository.UsuarioRepository;
 
 @Service
-public class UsuarioService {
+public class usuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
