@@ -30,24 +30,22 @@ public class EvaluacionController {
 
     @PostMapping("/{id}/evaluaciones")
     public ResponseEntity<?> crearEvaluacion(@PathVariable Long id, @RequestBody Evaluacion ev) {
+        if (ev.getCurso() == null || ev.getCurso().getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El curso de la evaluación no puede ser nulo");
+        }
+
         Curso curso = cursoRepo.findById(ev.getCurso().getId()).orElse(null);
         if (curso == null || !curso.getInstructor().getId().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No puedes crear evaluación en este curso");
         }
-            return ResponseEntity.ok(evaluacionRepo.save(ev));
+
+        Evaluacion nuevaEvaluacion = evaluacionRepo.save(ev);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaEvaluacion);
     }
 
     @GetMapping("/{id}/evaluaciones")
     public ResponseEntity<?> verEvaluaciones(@PathVariable Long id) {
-        List<Evaluacion> lista = evaluacionRepo.findAll();
-        List<Evaluacion> propias = new ArrayList<>();
-
-        for (Evaluacion e : lista) {
-            if (e.getCurso().getInstructor().getId().equals(id)) {
-                propias.add(e);
-            }
-        }
-
+        List<Evaluacion> propias = evaluacionRepo.findByCursoInstructorId(id);
         return ResponseEntity.ok(propias);
     }
 }
