@@ -85,13 +85,6 @@ public class InstructorController {
         return ResponseEntity.ok(instructorRepo.save(i));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Long id) {
-        if (!instructorRepo.existsById(id)) return ResponseEntity.notFound().build();
-
-        instructorRepo.deleteById(id);
-        return ResponseEntity.ok("Instructor eliminado");
-    }
 
     // Ver cursos que dicta
     @GetMapping("/{id}/cursos")
@@ -133,26 +126,5 @@ public class InstructorController {
     }
 }
 
-@PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody Map<String, String> datos) {
-    String correo = datos.get("correo");
-    String clave = datos.get("clave");
-
-    if (correo == null || clave == null) {
-        return ResponseEntity.badRequest().body("Faltan datos de acceso");
-    }
-
-    Instructor instructor = instructorRepo.findByCorreoAndClave(correo, clave);
-
-    if (instructor == null) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
-    }
-
-    if (!"activo".equalsIgnoreCase(instructor.getEstado())) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Instructor inactivo");
-    }
-
-    return ResponseEntity.ok(instructor);
-}
 
 //Catalina Rosales->rataxikita
