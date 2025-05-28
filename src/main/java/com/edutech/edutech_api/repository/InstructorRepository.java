@@ -7,7 +7,7 @@ import com.edutech.edutech_api.model.Instructor;
 
 public interface InstructorRepository extends JpaRepository<Instructor, Long> {
     Instructor findByRut(String rut);
-    Instructor findByCorreo(String correo, String clave);
+    Instructor findByCorreo(String correo);
 }
 
 // Catalina Rosales->rataxikita
