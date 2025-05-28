@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.edutech.edutech_api.model.Curso;
-import com.edutech.edutech_api.model.Usuario;
+import com.edutech.edutech_api.model.Instructor;
 import com.edutech.edutech_api.service.GerenteCursosService;
 
 @RestController
@@ -54,7 +54,7 @@ public class GerenteCursosController {
             @PathVariable Long cursoId,
             @PathVariable Long instructorId) {
         try {
-            Usuario instructor = gerenteCursosService.asignarInstructor(cursoId, instructorId);
+            Instructor instructor = gerenteCursosService.asignarInstructor(cursoId, instructorId);
             return ResponseEntity.ok(instructor);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al asignar instructor: " + e.getMessage());

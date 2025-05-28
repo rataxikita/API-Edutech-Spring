@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.edutech_api.model.Instructor;
-import com.edutech.edutech_api.model.Usuario;
 import com.edutech.edutech_api.model.Curso;
 import com.edutech.edutech_api.model.Evaluacion;
 import com.edutech.edutech_api.model.Contenido;
 import com.edutech.edutech_api.model.Pregunta;
 import com.edutech.edutech_api.repository.InstructorRepository;
-import com.edutech.edutech_api.repository.UsuarioRepository;
 import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.repository.EvaluacionRepository;
 import com.edutech.edutech_api.repository.ContenidoRepository;
@@ -24,9 +22,6 @@ import com.edutech.edutech_api.repository.PreguntaRepository;
 public class InstructorService {
     @Autowired
     private InstructorRepository instructorRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private CursoRepository cursoRepository;
@@ -124,9 +119,8 @@ public class InstructorService {
 
     // Métodos privados de ayuda
     private void validarPermisosInstructor(Long cursoId) {
-        Curso curso = cursoRepository.findById(cursoId)
-            .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
-            
+        // Curso curso = cursoRepository.findById(cursoId)
+        //     .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
         // Aquí se debería implementar la validación del instructor actual
         // Por ejemplo, verificar que el instructor actual sea el asignado al curso
     }

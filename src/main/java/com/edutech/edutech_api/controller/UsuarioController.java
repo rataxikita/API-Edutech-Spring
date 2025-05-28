@@ -1,3 +1,4 @@
+package com.edutech.edutech_api.controller;
 //Catalina Rosales->rataxikita
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,7 +62,12 @@ public class UsuarioController {
             }
         }
 
-        return ResponseEntity.ok(usuario);
+        // Devolver el tipo real de usuario
+        String tipo = usuario.getClass().getSimpleName();
+        return ResponseEntity.ok(Map.of(
+            "usuario", usuario,
+            "tipo", tipo
+        ));
     }
 
     // LISTAR TODOS

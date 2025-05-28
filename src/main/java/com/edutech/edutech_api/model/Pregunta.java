@@ -22,6 +22,8 @@ public class Pregunta {
 
     private String contenido;
     private String fecha;
+    private String respuesta;
+    private String fechaRespuesta;
 
     public Pregunta() {
     }
@@ -74,6 +76,20 @@ public class Pregunta {
         this.fecha = fecha;
     }
 
-    
+    public String getRespuesta() {
+        return respuesta;
+    }
+
+    public void setRespuesta(String respuesta) {
+        this.respuesta = respuesta;
+    }
+
+    public String getFechaRespuesta() {
+        return fechaRespuesta;
+    }
+
+    public void setFechaRespuesta(String fecha) {
+        this.fechaRespuesta = fecha;
+    }
 }
 // Catalina Rosales->rataxikita

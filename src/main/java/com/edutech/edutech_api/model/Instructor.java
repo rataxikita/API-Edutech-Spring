@@ -9,10 +9,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.DiscriminatorValue;
 
 @Entity
-public class Instructor {
+@DiscriminatorValue("INSTRUCTOR")
+public class Instructor extends Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

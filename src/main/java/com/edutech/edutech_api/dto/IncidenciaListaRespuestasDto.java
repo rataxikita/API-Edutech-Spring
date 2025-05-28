@@ -1,4 +1,4 @@
-package com.duoc.Edutech.dto;
+package com.edutech.edutech_api.dto;
 
 
 public class IncidenciaListaRespuestasDto {
@@ -8,6 +8,8 @@ public class IncidenciaListaRespuestasDto {
     private String respuesta;
     private String usuarioCorreo;
     private String gerenteCorreo;
+    private Long usuarioId;
+    private Long gerenteId;
     
     public IncidenciaListaRespuestasDto() {
     }
@@ -70,5 +72,19 @@ public class IncidenciaListaRespuestasDto {
         this.gerenteCorreo = gerenteCorreo;
     }
 
-    
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public Long getGerenteId() {
+        return gerenteId;
+    }
+
+    public void setGerenteId(Long gerenteId) {
+        this.gerenteId = gerenteId;
+    }
 }

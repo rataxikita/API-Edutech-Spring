@@ -12,29 +12,23 @@ public class Incidencia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String titulo;
     private String descripcion;
     private String respuesta;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    @JoinColumn(name = "alumno_id")
+    private Alumno alumno;
 
     @ManyToOne
-    @JoinColumn(name = "gerente_id")
-    private Usuario gerente;
+    @JoinColumn(name = "soporte_id")
+    private Soporte soporte;
 
-    public Incidencia() {
-    }
-
-    public Incidencia(Long id, String titulo, String descripcion, String respuesta, Usuario usuario, Usuario gerente) {
-        this.id = id;
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.respuesta = respuesta;
-        this.usuario = usuario;
-        this.gerente = gerente;
+    public Incidencia(){
+        this.id = (long) 0;
+        this.titulo = "";
+        this.descripcion = "";
+        this.respuesta = "";
     }
 
     public Long getId() {
@@ -69,20 +63,20 @@ public class Incidencia {
         this.respuesta = respuesta;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Alumno getAlumno() {
+        return alumno;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setAlumno(Alumno alumno) {
+        this.alumno = alumno;
     }
 
-    public Usuario getGerente() {
-        return gerente;
+    public Soporte getSoporte() {
+        return soporte;
     }
 
-    public void setGerente(Usuario gerente) {
-        this.gerente = gerente;
+    public void setSoporte(Soporte soporte) {
+        this.soporte = soporte;
     }
 
     

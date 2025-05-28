@@ -24,12 +24,12 @@ public class CursoService {
     }
 
     //puede devolver un objeto Curso o Optional.empty() si no se encuentra.
-    public Optional<Curso> buscar(String sigla) {
-        return CursoRepository.findById(sigla);
+    public Optional<Curso> buscar(Long id) {
+        return CursoRepository.findById(id);
     }
 
-    public void eliminar(String sigla) {
-        CursoRepository.deleteById(sigla);
+    public void eliminar(Long id) {
+        CursoRepository.deleteById(id);
     }
 }
 

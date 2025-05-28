@@ -1,4 +1,4 @@
-package com.duoc.Edutech.Controller;
+package com.edutech.edutech_api.controller;
 
 import java.util.List;
 
@@ -11,29 +11,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.duoc.Edutech.dto.IncidenciaListaRespuestasDto;
-import com.duoc.Edutech.dto.IncidenciaPreguntaDto;
-import com.duoc.Edutech.dto.IncidenciaRespuestaDto;
-import com.duoc.Edutech.service.IncidenciaService;
+import com.edutech.edutech_api.dto.RespuestaIncidenciaDto;
+import com.edutech.edutech_api.model.Incidencia;
+import com.edutech.edutech_api.service.IncidenciaService;
 
 @RestController
-@RequestMapping("/api/incidencias")
+@RequestMapping("/incidencias")
 public class IncidenciaController {
     @Autowired
     private IncidenciaService incidenciaService;
 
-    @PostMapping("/crear/{usuarioId}")
-    public IncidenciaListaRespuestasDto crear(@PathVariable Long usuarioId, @RequestBody IncidenciaPreguntaDto dto) {
-        return incidenciaService.crearIncidencia(usuarioId, dto);
-    }
-
-    @PutMapping("/responder/{incidenciaId}/{gerenteId}")
-    public IncidenciaListaRespuestasDto responder(@PathVariable Long incidenciaId, @PathVariable Long gerenteId, @RequestBody IncidenciaRespuestaDto dto){
-        return incidenciaService.responderIncidencia(incidenciaId, gerenteId, dto);
+    @PostMapping
+    public String almacenar(@RequestBody Incidencia incidencia){
+        return incidenciaService.crearIncidencia(incidencia);
     }
 
     @GetMapping
-    public List<IncidenciaListaRespuestasDto> listar() {
-        return incidenciaService.listarTodas();
+    public List<Incidencia> listyar(){
+        return incidenciaService.listar();
+    }
+
+    @PutMapping("/{id}/respuesta")
+    public Incidencia responder(@PathVariable Long id, @RequestBody RespuestaIncidenciaDto resDto){
+        return incidenciaService.responderIncidencia(id, resDto);
     }
 }
+
+//Diego Sotelo G.
