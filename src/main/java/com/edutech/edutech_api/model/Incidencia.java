@@ -1,4 +1,4 @@
-package com.duoc.Edutech.model;
+package com.edutech.edutech_api.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ public class Incidencia {
     private String respuesta;
 
     @ManyToOne
-    @JoinColumn(name = "usuasrio_id")
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @ManyToOne

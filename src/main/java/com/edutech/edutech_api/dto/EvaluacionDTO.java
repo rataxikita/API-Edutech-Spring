@@ -4,33 +4,31 @@ package com.edutech.edutech_api.dto;
 
 public class EvaluacionDTO {
 
-
-    private String cursoSigla;
+    private Long cursoId;
     private String titulo;
     private String descripcion;
     private String fechaPublicacion;
 
-
     public EvaluacionDTO() {
-        this.cursoSigla = "";
+        this.cursoId = 0L;
         this.titulo = "";
         this.descripcion = "";
-        this.fechaPublicacion ="";
+        this.fechaPublicacion = "";
     }
 
-    public EvaluacionDTO(String cursoSigla, String titulo, String descripcion,String fechaPublicacion) {
-        this.cursoSigla = cursoSigla;
+    public EvaluacionDTO(Long cursoId, String titulo, String descripcion, String fechaPublicacion) {
+        this.cursoId = cursoId;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public String getCursoSigla() {
-        return cursoSigla;
+    public Long getCursoId() {
+        return cursoId;
     }
 
-    public void setCursoSigla(String cursoSigla) {
-        this.cursoSigla = cursoSigla;
+    public void setCursoId(Long cursoId) {
+        this.cursoId = cursoId;
     }
 
     public String getTitulo() {
@@ -56,7 +54,6 @@ public class EvaluacionDTO {
     public void setFechaPublicacion(String fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
-
 }
 
 

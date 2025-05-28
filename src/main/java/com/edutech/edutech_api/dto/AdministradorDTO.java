@@ -1,5 +1,1 @@
-package com.edutech.edutech_api.dto;
-
-public class AdministradorDTO {
-
-}
+package com.edutech.edutech_api.dto; 

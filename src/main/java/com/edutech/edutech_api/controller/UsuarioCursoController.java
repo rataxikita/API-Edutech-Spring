@@ -8,18 +8,32 @@ import org.springframework.web.bind.annotation.*;
 
 import com.edutech.edutech_api.model.UsuarioCurso;
 import com.edutech.edutech_api.repository.UsuarioCursoRepository;
+import com.edutech.edutech_api.repository.UsuarioRepository;
+import com.edutech.edutech_api.model.Usuario;
 
 import java.util.*;
 
 @RestController
-@RequestMapping("/usuario-cursos")
+@RequestMapping("/api/usuario-cursos")
 public class UsuarioCursoController {
 
     @Autowired
     private UsuarioCursoRepository usuarioCursoRepo;
 
+    @Autowired
+    private UsuarioRepository usuarioRepo;
+
     @PostMapping("/inscribir")
     public ResponseEntity<?> inscribir(@RequestBody UsuarioCurso uc) {
+        // Validar que el usuario existe y es estudiante
+        Usuario usuario = usuarioRepo.findById(uc.getUsuario().getId())
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+        if (!usuario.esEstudiante()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("Solo los estudiantes pueden inscribirse en cursos");
+        }
+
         // Validar que no esté ya inscrito en el mismo curso
         List<UsuarioCurso> existentes = usuarioCursoRepo.findByUsuarioIdAndCursoId(
             uc.getUsuario().getId(),
@@ -37,12 +51,22 @@ public class UsuarioCursoController {
 
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<?> cursosDeUsuario(@PathVariable Long usuarioId) {
+        // Validar que el usuario existe
+        if (!usuarioRepo.existsById(usuarioId)) {
+            return ResponseEntity.notFound().build();
+        }
+
         List<UsuarioCurso> lista = usuarioCursoRepo.findByUsuarioId(usuarioId);
         return ResponseEntity.ok(lista);
     }
 
     @GetMapping("/usuario/{usuarioId}/progreso")
     public ResponseEntity<?> progresoDeUsuario(@PathVariable Long usuarioId) {
+        // Validar que el usuario existe
+        if (!usuarioRepo.existsById(usuarioId)) {
+            return ResponseEntity.notFound().build();
+        }
+
         List<UsuarioCurso> lista = usuarioCursoRepo.findByUsuarioId(usuarioId);
         List<Map<String, String>> progreso = new ArrayList<>();
 

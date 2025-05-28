@@ -15,7 +15,7 @@ public class Evaluacion {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "curso_sigla")
+    @JoinColumn(name = "curso_id")
     private Curso curso;
 
     private String titulo;
@@ -72,7 +72,5 @@ public class Evaluacion {
     public void setFechaPublicacion(String fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     } 
-
-    
 }
 // Catalina Rosales->rataxikita
