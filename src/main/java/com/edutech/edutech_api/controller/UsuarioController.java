@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/api/usuarios")
 public class UsuarioController {
 
     @Autowired
@@ -33,7 +33,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioRepo.save(usuario));
     }
 
-    // LOGIN
+    // LOGIN UNIFICADO
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> datos) {
         String correo = datos.get("correo");
@@ -51,6 +51,14 @@ public class UsuarioController {
 
         if (!usuario.isEstado()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario inactivo");
+        }
+
+        // Validación de rol para administradores
+        if (datos.containsKey("admin") && Boolean.parseBoolean(datos.get("admin"))) {
+            if (!usuario.esAdministrador()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Acceso denegado: se requieren privilegios de administrador");
+            }
         }
 
         return ResponseEntity.ok(usuario);

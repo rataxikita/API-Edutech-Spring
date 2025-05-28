@@ -1,4 +1,4 @@
-package com.duoc.Edutech.service;
+package com.edutech.edutech_api.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.duoc.Edutech.dto.IncidenciaListaRespuestasDto;
-import com.duoc.Edutech.dto.IncidenciaPreguntaDto;
-import com.duoc.Edutech.dto.IncidenciaRespuestaDto;
-import com.duoc.Edutech.model.Incidencia;
-import com.duoc.Edutech.model.Usuario;
-import com.duoc.Edutech.repository.IncidenciaRepository;
-import com.duoc.Edutech.repository.UsuarioRepository;
+import com.edutech.edutech_api.dto.IncidenciaListaRespuestasDto;
+import com.edutech.edutech_api.dto.IncidenciaPreguntaDto;
+import com.edutech.edutech_api.dto.IncidenciaRespuestaDto;
+import com.edutech.edutech_api.model.Incidencia;
+import com.edutech.edutech_api.model.Usuario;
+import com.edutech.edutech_api.repository.IncidenciaRepository;
+import com.edutech.edutech_api.repository.UsuarioRepository;
 
 @Service
 public class IncidenciaService {
@@ -34,7 +34,7 @@ public class IncidenciaService {
         return toDTO(incidencia);
     }
 
-        public IncidenciaListaRespuestasDto responderIncidencia(Long incidenciaId, Long gerenteId, IncidenciaRespuestaDto dto) {
+    public IncidenciaListaRespuestasDto responderIncidencia(Long incidenciaId, Long gerenteId, IncidenciaRespuestaDto dto) {
         Incidencia incidencia = incidenciaRepository.findById(incidenciaId)
                 .orElseThrow(() -> new RuntimeException("Incidencia no encontrada"));
         Usuario gerente = usuarioRepository.findById(gerenteId)
@@ -48,20 +48,22 @@ public class IncidenciaService {
         return toDTO(incidencia);
     }
 
-        public List<IncidenciaListaRespuestasDto> listarTodas() {
+    public List<IncidenciaListaRespuestasDto> listarTodas() {
         return incidenciaRepository.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-        private IncidenciaListaRespuestasDto toDTO(Incidencia incidencia) {
+    private IncidenciaListaRespuestasDto toDTO(Incidencia incidencia) {
         IncidenciaListaRespuestasDto dto = new IncidenciaListaRespuestasDto();
         dto.setId(incidencia.getId());
         dto.setTitulo(incidencia.getTitulo());
         dto.setDescripcion(incidencia.getDescripcion());
         dto.setRespuesta(incidencia.getRespuesta());
-        dto.setUsuarioCorreo(incidencia.getUsuario() != null ? incidencia.getUsuario().getCorreo() : null);
-        dto.setGerenteCorreo(incidencia.getGerente() != null ? incidencia.getGerente().getCorreo() : null);
+        dto.setUsuarioId(incidencia.getUsuario().getId());
+        if (incidencia.getGerente() != null) {
+            dto.setGerenteId(incidencia.getGerente().getId());
+        }
         return dto;
     }
 }
