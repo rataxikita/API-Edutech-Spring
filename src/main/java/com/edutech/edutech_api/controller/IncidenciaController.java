@@ -22,7 +22,7 @@ public class IncidenciaController {
     private IncidenciaService incidenciaService;
 
     @PostMapping
-    public String almacenar(@RequestBody Incidencia incidencia){
+    public Incidencia almacenar(@RequestBody Incidencia incidencia){
         return incidenciaService.crearIncidencia(incidencia);
     }
 

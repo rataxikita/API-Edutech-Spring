@@ -1,30 +1,38 @@
 package com.edutech.edutech_api.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class RespuestaIncidenciaDto {
-    private Long id;
-    private String nombreSoporte;
+    @NotNull(message = "El ID de la incidencia es obligatorio")
+    private Long incidenciaId;
+    @NotNull(message = "El ID del soporte es obligatorio")
+    private Long soporteId;
+    @NotBlank(message = "La respuesta no puede estar vacía")
     private String respuesta;
-    
-    public RespuestaIncidenciaDto(Long id, String nombreSoporte, String respuesta) {
-        this.id = id;
-        this.nombreSoporte = nombreSoporte;
+
+    public RespuestaIncidenciaDto() {}
+
+    public RespuestaIncidenciaDto(Long incidenciaId, Long soporteId, String respuesta) {
+        this.incidenciaId = incidenciaId;
+        this.soporteId = soporteId;
         this.respuesta = respuesta;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIncidenciaId() {
+        return incidenciaId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIncidenciaId(Long incidenciaId) {
+        this.incidenciaId = incidenciaId;
     }
 
-    public String getNombreSoporte() {
-        return nombreSoporte;
+    public Long getSoporteId() {
+        return soporteId;
     }
 
-    public void setNombreSoporte(String nombreSoporte) {
-        this.nombreSoporte = nombreSoporte;
+    public void setSoporteId(Long soporteId) {
+        this.soporteId = soporteId;
     }
 
     public String getRespuesta() {
@@ -34,6 +42,6 @@ public class RespuestaIncidenciaDto {
     public void setRespuesta(String respuesta) {
         this.respuesta = respuesta;
     }
-
-    
 }
+
+

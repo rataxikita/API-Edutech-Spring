@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.edutech.edutech_api.dto.RespuestaIncidenciaDto;
 import com.edutech.edutech_api.model.Incidencia;
 import com.edutech.edutech_api.model.Soporte;
-//import com.example.demo.repository.AlumnoRepository;
 import com.edutech.edutech_api.repository.IncidenciaRepository;
 import com.edutech.edutech_api.repository.SoporteRepository;
 
@@ -21,9 +20,8 @@ public class IncidenciaService {
     //@Autowired
     //private AlumnoRepository alumnoRepository;
 
-    public String crearIncidencia(Incidencia incidencia){
-        incidenciaRepository.save(incidencia);
-        return "Incidencia enviada";
+    public Incidencia crearIncidencia(Incidencia incidencia){
+        return incidenciaRepository.save(incidencia);
     }
 
     public List<Incidencia> listar(){
@@ -32,13 +30,13 @@ public class IncidenciaService {
 
     public Incidencia responderIncidencia(Long id, RespuestaIncidenciaDto respuestaDto){
         Incidencia incidencia = incidenciaRepository.findById(id).orElseThrow(() -> new RuntimeException("Incidencia no encontrada"));
-    if (incidencia.getRespuesta() != null){
-        throw new RuntimeException("La incidencia ya ha sido respondida.");
-    }
-    Soporte soporte = soporteRepository.findById(respuestaDto.getId()).orElseThrow(() -> new RuntimeException("Soporte no encontrado"));
-    incidencia.setRespuesta(respuestaDto.getRespuesta());
-    incidencia.setSoporte(soporte);
-    return incidenciaRepository.save(incidencia);
+        if (incidencia.getRespuesta() != null){
+            throw new RuntimeException("La incidencia ya ha sido respondida.");
+        }
+        Soporte soporte = soporteRepository.findById(respuestaDto.getSoporteId()).orElseThrow(() -> new RuntimeException("Soporte no encontrado"));
+        incidencia.setRespuesta(respuestaDto.getRespuesta());
+        incidencia.setSoporte(soporte);
+        return incidenciaRepository.save(incidencia);
     }
 
 }
