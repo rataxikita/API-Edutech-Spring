@@ -4,6 +4,7 @@ package com.edutech.edutech_api.dto;
 
 public class EvaluacionDTO {
 
+    private Long id;
     private Long cursoId;
     private String titulo;
     private String descripcion;
@@ -21,6 +22,14 @@ public class EvaluacionDTO {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fechaPublicacion = fechaPublicacion;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getCursoId() {

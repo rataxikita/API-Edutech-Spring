@@ -1,3 +1,4 @@
+package com.edutech.edutech_api.controller;
 //Catalina Rosales->rataxikita
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +24,8 @@ import com.edutech.edutech_api.repository.RespuestaRepository;
 import com.edutech.edutech_api.model.Contenido;
 import com.edutech.edutech_api.model.Evaluacion;
 import com.edutech.edutech_api.service.InstructorService;
+import com.edutech.edutech_api.repository.CursoRepository;
+import com.edutech.edutech_api.model.Curso;
 
 @RestController
 @RequestMapping("/instructores")
@@ -55,7 +57,7 @@ public class InstructorController {
     }
 
     // Validar correo
-    Instructor existePorCorreo = instructorRepo.findByCorreo(i.getCorreo(), null);
+    Instructor existePorCorreo = instructorRepo.findByCorreo(i.getCorreo());
     if (existePorCorreo != null) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Correo ya registrado");
     }

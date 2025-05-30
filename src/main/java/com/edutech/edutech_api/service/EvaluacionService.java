@@ -20,7 +20,7 @@ public class EvaluacionService {
     private CursoRepository cursoRepository;
 
     public Evaluacion crearEvaluacion(EvaluacionDTO DTO) {
-        Curso curso = cursoRepository.findById(DTO.getCursoSigla()) //para buscar un Curso utilizandoID.
+        Curso curso = cursoRepository.findById(DTO.getCursoId())
         .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
         Evaluacion eval = new Evaluacion(null, curso, DTO.getTitulo(), DTO.getDescripcion(), DTO.getFechaPublicacion());
         return evaluacionRepository.save(eval);

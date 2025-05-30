@@ -1,4 +1,4 @@
-package com.duoc.Edutech.dto;
+package com.edutech.edutech_api.dto;
 
 public class IncidenciaRespuestaDto {
     private String respuesta;

@@ -15,36 +15,42 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.DiscriminatorColumn;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_usuario")
 @Table(name = "usuarios")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
     
     @NotBlank(message = "El nombre es obligatorio")
     @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
-    private String nombre;
+    protected String nombre;
     
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "El formato del correo no es válido")
     @Column(unique = true)
-    private String correo;
+    protected String correo;
     
     @NotBlank(message = "La clave es obligatoria")
     @Size(min = 6, message = "La clave debe tener al menos 6 caracteres")
-    private String clave;
+    protected String clave;
     
-    private boolean estado = true;
+    @Column(name = "activo")
+    protected boolean estado = true;
     
     @NotNull(message = "El rol es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "rol")
-    private Rol rol;
+    protected Rol rol;
 
     @OneToMany(mappedBy = "usuario")
-    private List<UsuarioCurso> inscripciones;
+    protected List<UsuarioCurso> inscripciones;
 
     public Usuario() {}
 

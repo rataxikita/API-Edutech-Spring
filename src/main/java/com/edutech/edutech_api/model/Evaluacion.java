@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Evaluacion {
@@ -21,6 +22,9 @@ public class Evaluacion {
     private String titulo;
     private String descripcion;
     private String fechaPublicacion;
+
+    @OneToMany
+    private java.util.List<Pregunta> preguntas = new java.util.ArrayList<>();
 
     public Evaluacion() {
     }
@@ -71,6 +75,9 @@ public class Evaluacion {
 
     public void setFechaPublicacion(String fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
-    } 
+    }
+
+    public java.util.List<Pregunta> getPreguntas() { return preguntas; }
+    public void setPreguntas(java.util.List<Pregunta> preguntas) { this.preguntas = preguntas; }
 }
 // Catalina Rosales->rataxikita

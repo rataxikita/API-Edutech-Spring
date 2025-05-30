@@ -1,28 +1,20 @@
 // Catalina Rosales->rataxikita
 package com.edutech.edutech_api.service;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.edutech.edutech_api.model.Usuario;
 import com.edutech.edutech_api.model.Curso;
-import com.edutech.edutech_api.model.Rol;
-import com.edutech.edutech_api.repository.UsuarioRepository;
+import com.edutech.edutech_api.model.Instructor;
 import com.edutech.edutech_api.repository.CursoRepository;
+import com.edutech.edutech_api.repository.InstructorRepository;
+import java.util.Map;
 
 @Service
 public class GerenteCursosService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private CursoRepository cursoRepository;
+
+    private InstructorRepository instructorRepository;
 
     // Gestión de Cursos
     public Curso crearCurso(Curso curso) {
@@ -54,22 +46,14 @@ public class GerenteCursosService {
     }
 
     // Gestión de Instructores
-    public Usuario asignarInstructor(Long cursoId, Long instructorId) {
+    public Instructor asignarInstructor(Long cursoId, Long instructorId) {
         validarPermisosGerente();
-        
         Curso curso = cursoRepository.findById(cursoId)
             .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
-            
-        Usuario instructor = usuarioRepository.findById(instructorId)
+        Instructor instructor = instructorRepository.findById(instructorId)
             .orElseThrow(() -> new RuntimeException("Instructor no encontrado"));
-            
-        if (!instructor.esInstructor()) {
-            throw new RuntimeException("El usuario no es un instructor");
-        }
-        
         curso.setInstructor(instructor);
         cursoRepository.save(curso);
-        
         return instructor;
     }
 
