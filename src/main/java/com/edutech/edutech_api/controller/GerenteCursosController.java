@@ -29,7 +29,7 @@ public class GerenteCursosController {
     }
 
     @PutMapping("/cursos/{id}")
-    public ResponseEntity<?> actualizarCurso(@PathVariable Long id, @RequestBody Curso curso) {
+    public ResponseEntity<?> actualizarCurso(@PathVariable String id, @RequestBody Curso curso) {
         try {
             Curso cursoActualizado = gerenteCursosService.actualizarCurso(id, curso);
             return ResponseEntity.ok(cursoActualizado);
@@ -39,7 +39,7 @@ public class GerenteCursosController {
     }
 
     @DeleteMapping("/cursos/{id}")
-    public ResponseEntity<?> eliminarCurso(@PathVariable Long id) {
+    public ResponseEntity<?> eliminarCurso(@PathVariable String id) {
         try {
             gerenteCursosService.eliminarCurso(id);
             return ResponseEntity.ok("Curso eliminado exitosamente");
@@ -51,7 +51,7 @@ public class GerenteCursosController {
     // Gestión de Instructores
     @PostMapping("/cursos/{cursoId}/instructores/{instructorId}")
     public ResponseEntity<?> asignarInstructor(
-            @PathVariable Long cursoId,
+            @PathVariable String cursoId,
             @PathVariable Long instructorId) {
         try {
             Instructor instructor = gerenteCursosService.asignarInstructor(cursoId, instructorId);
@@ -63,7 +63,7 @@ public class GerenteCursosController {
 
     // Reportes
     @GetMapping("/cursos/{cursoId}/reporte-inscripciones")
-    public ResponseEntity<?> generarReporteInscripciones(@PathVariable Long cursoId) {
+    public ResponseEntity<?> generarReporteInscripciones(@PathVariable String cursoId) {
         try {
             Map<String, Object> reporte = gerenteCursosService.generarReporteInscripciones(cursoId);
             return ResponseEntity.ok(reporte);
@@ -73,7 +73,7 @@ public class GerenteCursosController {
     }
 
     @GetMapping("/cursos/{cursoId}/reporte-rendimiento")
-    public ResponseEntity<?> generarReporteRendimiento(@PathVariable Long cursoId) {
+    public ResponseEntity<?> generarReporteRendimiento(@PathVariable String cursoId) {
         try {
             Map<String, Object> reporte = gerenteCursosService.generarReporteRendimiento(cursoId);
             return ResponseEntity.ok(reporte);
@@ -84,7 +84,7 @@ public class GerenteCursosController {
 
     // Validación de Contenido
     @PostMapping("/cursos/{cursoId}/aprobar")
-    public ResponseEntity<?> aprobarContenido(@PathVariable Long cursoId) {
+    public ResponseEntity<?> aprobarContenido(@PathVariable String cursoId) {
         try {
             gerenteCursosService.aprobarContenido(cursoId);
             return ResponseEntity.ok("Contenido aprobado exitosamente");
@@ -95,7 +95,7 @@ public class GerenteCursosController {
 
     @PostMapping("/cursos/{cursoId}/rechazar")
     public ResponseEntity<?> rechazarContenido(
-            @PathVariable Long cursoId,
+            @PathVariable String cursoId,
             @RequestBody Map<String, String> motivo) {
         try {
             gerenteCursosService.rechazarContenido(cursoId, motivo.get("motivo"));

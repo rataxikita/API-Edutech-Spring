@@ -22,7 +22,7 @@ public class GerenteCursosService {
         return cursoRepository.save(curso);
     }
 
-    public Curso actualizarCurso(Long id, Curso cursoActualizado) {
+    public Curso actualizarCurso(String id, Curso cursoActualizado) {
         validarPermisosGerente();
         Curso curso = cursoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
@@ -30,14 +30,14 @@ public class GerenteCursosService {
         // Actualizar campos del curso
         curso.setNombre(cursoActualizado.getNombre());
         curso.setDescripcion(cursoActualizado.getDescripcion());
-        curso.setEstado(cursoActualizado.getEstado());
+        curso.setEstado(cursoActualizado.isEstado());
         curso.setSigla(cursoActualizado.getSigla());
         curso.setValor(cursoActualizado.getValor());
         
         return cursoRepository.save(curso);
     }
 
-    public void eliminarCurso(Long id) {
+    public void eliminarCurso(String id) {
         validarPermisosGerente();
         if (!cursoRepository.existsById(id)) {
             throw new RuntimeException("Curso no encontrado");
@@ -46,7 +46,7 @@ public class GerenteCursosService {
     }
 
     // Gestión de Instructores
-    public Instructor asignarInstructor(Long cursoId, Long instructorId) {
+    public Instructor asignarInstructor(String cursoId, Long instructorId) {
         validarPermisosGerente();
         Curso curso = cursoRepository.findById(cursoId)
             .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
@@ -58,14 +58,13 @@ public class GerenteCursosService {
     }
 
     // Reportes
-    public Map<String, Object> generarReporteInscripciones(Long cursoId) {
+    public Map<String, Object> generarReporteInscripciones(String cursoId) {
         validarPermisosGerente();
         
         Curso curso = cursoRepository.findById(cursoId)
             .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
             
         return Map.of(
-            "id", curso.getId(),
             "sigla", curso.getSigla(),
             "nombreCurso", curso.getNombre(),
             "totalInscritos", curso.getInscritos().size(),
@@ -73,14 +72,13 @@ public class GerenteCursosService {
         );
     }
 
-    public Map<String, Object> generarReporteRendimiento(Long cursoId) {
+    public Map<String, Object> generarReporteRendimiento(String cursoId) {
         validarPermisosGerente();
         
         Curso curso = cursoRepository.findById(cursoId)
             .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
             
         return Map.of(
-            "id", curso.getId(),
             "sigla", curso.getSigla(),
             "nombreCurso", curso.getNombre(),
             "promedioAprobacion", calcularPromedioAprobacion(curso),
@@ -89,23 +87,23 @@ public class GerenteCursosService {
     }
 
     // Validación de Contenido
-    public void aprobarContenido(Long cursoId) {
+    public void aprobarContenido(String cursoId) {
         validarPermisosGerente();
         
         Curso curso = cursoRepository.findById(cursoId)
             .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
             
-        curso.setEstado("APROBADO");
+        curso.setEstado(true);
         cursoRepository.save(curso);
     }
 
-    public void rechazarContenido(Long cursoId, String motivo) {
+    public void rechazarContenido(String cursoId, String motivo) {
         validarPermisosGerente();
         
         Curso curso = cursoRepository.findById(cursoId)
             .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
             
-        curso.setEstado("RECHAZADO");
+        curso.setEstado(false);
         cursoRepository.save(curso);
     }
 

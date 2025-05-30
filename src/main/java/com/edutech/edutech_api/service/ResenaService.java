@@ -1,4 +1,4 @@
-// Anais Llancapan- peitou1
+// Anais Llancapan - peitou1
 package com.edutech.edutech_api.service;
 
 import java.time.LocalDateTime;
@@ -22,17 +22,33 @@ public class ResenaService {
     @Autowired
     private UsuarioCursoRepository usuarioCursoRepository;
 
+    //Crear reseña
     public Resena crearResena(ResenaDTO dto) {
         UsuarioCurso usuarioCurso = usuarioCursoRepository.findById(dto.getUsuarioCursoId())
-        .orElseThrow(() -> new RuntimeException("UsuarioCurso no encontrado"));
-            String fechaActual = LocalDateTime.now().toString(); // Convertimos a String
-            Resena resena = new Resena(
-            null,dto.getDescripcion(),fechaActual,usuarioCurso);
+            .orElseThrow(() -> new RuntimeException("UsuarioCurso no encontrado"));
+
+        String fechaActual = LocalDateTime.now().toString();
+
+        Resena resena = new Resena(
+            null, // ID autogenerado
+            dto.getDescripcion(),
+            fechaActual,
+            usuarioCurso
+        );
 
         return resenaRepository.save(resena);
     }
-
+    //Listar reseñas
     public List<Resena> listarResenas() {
         return resenaRepository.findAll();
+    }
+
+    //Eliminar
+    public boolean eliminarResena(Long id) {
+        return resenaRepository.findById(id)
+            .map(resena -> {
+                resenaRepository.delete(resena);
+                return true;
+            }).orElse(false);
     }
 }

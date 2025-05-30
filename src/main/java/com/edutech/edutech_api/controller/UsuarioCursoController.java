@@ -35,9 +35,9 @@ public class UsuarioCursoController {
         }
 
         // Validar que no esté ya inscrito en el mismo curso
-        List<UsuarioCurso> existentes = usuarioCursoRepo.findByUsuarioIdAndCursoId(
+        List<UsuarioCurso> existentes = usuarioCursoRepo.findByUsuarioIdAndCursoSigla(
             uc.getUsuario().getId(),
-            uc.getCurso().getId()
+            uc.getCurso().getSigla()
         );
 
         if (!existentes.isEmpty()) {

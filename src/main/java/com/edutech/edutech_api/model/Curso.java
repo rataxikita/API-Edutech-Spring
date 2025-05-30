@@ -4,25 +4,35 @@ package com.edutech.edutech_api.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import java.util.List;
 
 @Entity
+@Table(name = "cursos")
 public class Curso {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private String sigla;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
     private String nombre;
+
+    @Column(length = 500)
     private String descripcion;
-    private String estado;
-    private String valor;
+
+    @NotNull(message = "El estado es obligatorio")
+    private boolean estado;
+
+    @NotNull(message = "El valor es obligatorio")
+    private double valor;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id")
@@ -37,28 +47,14 @@ public class Curso {
     @OneToMany(mappedBy = "curso")
     private List<UsuarioCurso> inscritos;
 
-    public Curso(){
-        this.sigla = "";
-        this.nombre = "";
-        this.descripcion = "";
-        this.estado = "";
-        this.valor = "";
-    }
+    public Curso() {}
 
-    public Curso(String sigla, String nombre, String descripcion, String estado, String valor) {
+    public Curso(String sigla, String nombre, String descripcion, boolean estado, double valor) {
         this.sigla = sigla;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.estado = estado;
         this.valor = valor;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getSigla() {
@@ -85,19 +81,19 @@ public class Curso {
         this.descripcion = descripcion;
     }
 
-    public String getEstado() {
+    public boolean isEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(boolean estado) {
         this.estado = estado;
     }
 
-    public String getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(String valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 

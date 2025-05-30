@@ -1,6 +1,7 @@
 //Anais Llancapan- peitou1
 package com.edutech.edutech_api.service;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,11 @@ public class EvaluacionService {
     private CursoRepository cursoRepository;
 
     public Evaluacion crearEvaluacion(EvaluacionDTO DTO) {
-        Curso curso = cursoRepository.findById(DTO.getCursoId())
-        .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+        Optional<Curso> cursoOpt = cursoRepository.findBySigla(DTO.getCursoSigla());
+        if (!cursoOpt.isPresent()) {
+            throw new RuntimeException("Curso no encontrado");
+        }
+        Curso curso = cursoOpt.get();
         Evaluacion eval = new Evaluacion(null, curso, DTO.getTitulo(), DTO.getDescripcion(), DTO.getFechaPublicacion());
         return evaluacionRepository.save(eval);
     }

@@ -30,7 +30,7 @@ public class EvaluacionController {
 
     @PostMapping("/{id}/evaluaciones")
     public ResponseEntity<?> crearEvaluacion(@PathVariable Long id, @RequestBody Evaluacion ev) {
-        Curso curso = cursoRepo.findById(ev.getCurso().getId()).orElse(null);
+        Curso curso = cursoRepo.findById(ev.getCurso().getSigla()).orElse(null);
         if (curso == null || !curso.getInstructor().getId().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No puedes crear evaluación en este curso");
         }

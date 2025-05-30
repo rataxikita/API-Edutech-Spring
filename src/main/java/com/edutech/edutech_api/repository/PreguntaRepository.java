@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.edutech.edutech_api.model.Pregunta;
 
 public interface PreguntaRepository extends JpaRepository<Pregunta, Long> {
-    List<Pregunta> findByCursoId(Long cursoId);
+    List<Pregunta> findByCursoSigla(String cursoSigla);
 }
 // Catalina Rosales->rataxikita

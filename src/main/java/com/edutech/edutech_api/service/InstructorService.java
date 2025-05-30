@@ -49,13 +49,13 @@ public class InstructorService {
     }
 
     // Gestión de Contenido
-    public Contenido crearContenido(Long cursoId, Contenido contenido) {
+    public Contenido crearContenido(String cursoId, Contenido contenido) {
         validarPermisosInstructor(cursoId);
-        contenido.setCurso(cursoRepository.findById(cursoId).orElseThrow());
+        contenido.setCurso(cursoRepository.findBySigla(cursoId).orElseThrow());
         return contenidoRepository.save(contenido);
     }
 
-    public Contenido actualizarContenido(Long cursoId, Long contenidoId, Contenido contenidoActualizado) {
+    public Contenido actualizarContenido(String cursoId, Long contenidoId, Contenido contenidoActualizado) {
         validarPermisosInstructor(cursoId);
         Contenido contenido = contenidoRepository.findById(contenidoId)
             .orElseThrow(() -> new RuntimeException("Contenido no encontrado"));
@@ -68,13 +68,13 @@ public class InstructorService {
     }
 
     // Gestión de Evaluaciones
-    public Evaluacion crearEvaluacion(Long cursoId, Evaluacion evaluacion) {
+    public Evaluacion crearEvaluacion(String cursoId, Evaluacion evaluacion) {
         validarPermisosInstructor(cursoId);
-        evaluacion.setCurso(cursoRepository.findById(cursoId).orElseThrow());
+        evaluacion.setCurso(cursoRepository.findBySigla(cursoId).orElseThrow());
         return evaluacionRepository.save(evaluacion);
     }
 
-    public Evaluacion actualizarEvaluacion(Long cursoId, Long evaluacionId, Evaluacion evaluacionActualizada) {
+    public Evaluacion actualizarEvaluacion(String cursoId, Long evaluacionId, Evaluacion evaluacionActualizada) {
         validarPermisosInstructor(cursoId);
         Evaluacion evaluacion = evaluacionRepository.findById(evaluacionId)
             .orElseThrow(() -> new RuntimeException("Evaluación no encontrada"));
@@ -91,7 +91,7 @@ public class InstructorService {
         Pregunta pregunta = preguntaRepository.findById(preguntaId)
             .orElseThrow(() -> new RuntimeException("Pregunta no encontrada"));
         
-        validarPermisosInstructor(pregunta.getCurso().getId());
+        validarPermisosInstructor(pregunta.getCurso().getSigla());
         
         pregunta.setRespuesta(respuesta);
         pregunta.setFechaRespuesta(java.time.LocalDateTime.now().toString());
@@ -100,14 +100,14 @@ public class InstructorService {
     }
 
     // Monitoreo de Progreso
-    public Map<String, Object> obtenerProgresoEstudiantes(Long cursoId) {
+    public Map<String, Object> obtenerProgresoEstudiantes(String cursoId) {
         validarPermisosInstructor(cursoId);
         
-        Curso curso = cursoRepository.findById(cursoId)
+        Curso curso = cursoRepository.findBySigla(cursoId)
             .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
             
         return Map.of(
-            "cursoId", curso.getId(),
+            "sigla", curso.getSigla(),
             "nombreCurso", curso.getNombre(),
             "totalEstudiantes", curso.getInscritos().size(),
             "estudiantesActivos", curso.getInscritos().stream()
@@ -118,7 +118,7 @@ public class InstructorService {
     }
 
     // Métodos privados de ayuda
-    private void validarPermisosInstructor(Long cursoId) {
+    private void validarPermisosInstructor(String cursoId) {
         // Curso curso = cursoRepository.findById(cursoId)
         //     .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
         // Aquí se debería implementar la validación del instructor actual

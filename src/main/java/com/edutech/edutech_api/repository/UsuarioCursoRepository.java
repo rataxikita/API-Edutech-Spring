@@ -10,6 +10,6 @@ import com.edutech.edutech_api.model.UsuarioCurso;
 
 public interface UsuarioCursoRepository extends JpaRepository<UsuarioCurso, Long> {
     List<UsuarioCurso> findByUsuarioId(Long usuarioId);
-    List<UsuarioCurso> findByUsuarioIdAndCursoId(Long usuarioId, Long cursoId);
+    List<UsuarioCurso> findByUsuarioIdAndCursoSigla(Long usuarioId, String cursoSigla);
 }
 // Catalina Rosales->rataxikita

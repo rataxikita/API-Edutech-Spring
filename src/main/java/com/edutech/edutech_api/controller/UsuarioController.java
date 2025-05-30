@@ -29,9 +29,10 @@ public class UsuarioController {
         if (existente != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Correo ya registrado");
         }
+        usuario.setEstado(true);
+        Usuario usuarioGuardado = usuarioRepo.save(usuario);
 
-        usuario.setEstado(true); 
-        return ResponseEntity.ok(usuarioRepo.save(usuario));
+        return ResponseEntity.ok(Map.of("msg", "Alumno registrado correctamente", "idUsuario", usuarioGuardado.getId()));
     }
 
     // LOGIN UNIFICADO
@@ -113,6 +114,18 @@ public class UsuarioController {
 
         usuarioRepo.deleteById(id);
         return ResponseEntity.ok("Usuario eliminado");
+    }
+
+    // ACTUALIZAR NOMBRE Y CORREO
+    @PutMapping("/{id}/perfil")
+    public ResponseEntity<?> actualizarPerfil(@PathVariable Long id, @RequestBody Usuario datos) {
+        Usuario usuario = usuarioRepo.findById(id).orElse(null);
+        if (usuario == null) return ResponseEntity.notFound().build();
+
+        if (datos.getNombre() != null) usuario.setNombre(datos.getNombre());
+        if (datos.getCorreo() != null) usuario.setCorreo(datos.getCorreo());
+
+        return ResponseEntity.ok(usuarioRepo.save(usuario));
     }
 }
 //Catalina Rosales->rataxikita

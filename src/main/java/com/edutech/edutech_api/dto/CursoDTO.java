@@ -6,18 +6,18 @@ public class CursoDTO {
     private String sigla;
     private String nombre;
     private String descripcion;
-    private String estado;
-    private String valor;
+    private boolean estado;
+    private double valor;
 
 public CursoDTO(){
     this.sigla = "";
     this.nombre= "";
-    this.estado= "";
+    this.estado= false;
     this.descripcion= "";
-    this.valor= "";
+    this.valor= 0.0;
 }   
 
-public CursoDTO(String sigla,String nombre, String descripcion, String estado, String valor) {
+public CursoDTO(String sigla,String nombre, String descripcion, boolean estado, double valor) {
     this.sigla = sigla;
     this.nombre = nombre;
     this.descripcion= descripcion;
@@ -49,19 +49,19 @@ public CursoDTO(String sigla,String nombre, String descripcion, String estado, S
         this.descripcion = descripcion;
     }
 
-    public String getEstado() {
+    public boolean getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(boolean estado) {
         this.estado = estado;
     }
 
-    public String getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(String valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 

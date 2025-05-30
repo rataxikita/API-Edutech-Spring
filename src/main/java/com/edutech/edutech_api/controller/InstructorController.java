@@ -135,7 +135,7 @@ public class InstructorController {
     // Gestión de Contenido
     @PostMapping("/cursos/{cursoId}/contenido")
     public ResponseEntity<?> crearContenido(
-            @PathVariable Long cursoId,
+            @PathVariable String cursoId,
             @RequestBody Contenido contenido) {
         try {
             Contenido nuevoContenido = instructorService.crearContenido(cursoId, contenido);
@@ -147,7 +147,7 @@ public class InstructorController {
 
     @PutMapping("/cursos/{cursoId}/contenido/{contenidoId}")
     public ResponseEntity<?> actualizarContenido(
-            @PathVariable Long cursoId,
+            @PathVariable String cursoId,
             @PathVariable Long contenidoId,
             @RequestBody Contenido contenido) {
         try {
@@ -161,7 +161,7 @@ public class InstructorController {
     // Gestión de Evaluaciones
     @PostMapping("/cursos/{cursoId}/evaluaciones")
     public ResponseEntity<?> crearEvaluacion(
-            @PathVariable Long cursoId,
+            @PathVariable String cursoId,
             @RequestBody Evaluacion evaluacion) {
         try {
             Evaluacion nuevaEvaluacion = instructorService.crearEvaluacion(cursoId, evaluacion);
@@ -173,7 +173,7 @@ public class InstructorController {
 
     @PutMapping("/cursos/{cursoId}/evaluaciones/{evaluacionId}")
     public ResponseEntity<?> actualizarEvaluacion(
-            @PathVariable Long cursoId,
+            @PathVariable String cursoId,
             @PathVariable Long evaluacionId,
             @RequestBody Evaluacion evaluacion) {
         try {
@@ -199,7 +199,7 @@ public class InstructorController {
 
     // Monitoreo de Progreso
     @GetMapping("/cursos/{cursoId}/progreso")
-    public ResponseEntity<?> obtenerProgresoEstudiantes(@PathVariable Long cursoId) {
+    public ResponseEntity<?> obtenerProgresoEstudiantes(@PathVariable String cursoId) {
         try {
             Map<String, Object> progreso = instructorService.obtenerProgresoEstudiantes(cursoId);
             return ResponseEntity.ok(progreso);
