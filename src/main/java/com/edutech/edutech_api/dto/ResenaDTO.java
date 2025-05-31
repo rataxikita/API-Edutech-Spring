@@ -3,33 +3,42 @@
 package com.edutech.edutech_api.dto;
 
 public class ResenaDTO {
-
+    private Long id;
     private String descripcion;
-    private Long usuarioCursoId;
-
-    public ResenaDTO() {
-        this.descripcion = "";
-        this.usuarioCursoId = 0L; // valor por defecto Long válido
-    }
-
-    public ResenaDTO(String descripcion, Long usuarioCursoId) {
-        this.descripcion = descripcion;
-        this.usuarioCursoId = usuarioCursoId;
-    }
-
+    private int calificacion;
+    private String correoUsuario;
+    private String siglaCurso;
+    
     public String getDescripcion() {
         return descripcion;
     }
-
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-
-    public Long getUsuarioCursoId() {
-        return usuarioCursoId;
+    public int getCalificacion() {
+        return calificacion;
+    }
+    public void setCalificacion(int calificacion) {
+        this.calificacion = calificacion;
+    }
+    public String getCorreoUsuario() {
+        return correoUsuario;
+    }
+    public void setCorreoUsuario(String correoUsuario) {
+        this.correoUsuario = correoUsuario;
+    }
+    public String getSiglaCurso() {
+        return siglaCurso;
+    }
+    public void setSiglaCurso(String siglaCurso) {
+        this.siglaCurso = siglaCurso;
+    }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setUsuarioCursoId(Long usuarioCursoId) {
-        this.usuarioCursoId = usuarioCursoId;
-    }
+    
 }

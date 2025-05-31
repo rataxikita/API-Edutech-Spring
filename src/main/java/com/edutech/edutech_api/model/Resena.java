@@ -1,70 +1,113 @@
 //Anais Llancapan- peitou1
 package com.edutech.edutech_api.model;
 
+
+
+import java.util.Optional;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
+
 public class Resena {
 
+
+
     @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-    
-    private String descripcion;
-    private String fecha;
+
+
+
+    private String contenido;
+
+    private int calificacion;
+
+
 
     @ManyToOne
-    @JoinColumn(name = "usuario_curso_id")
-    private UsuarioCurso usuarioCurso;
 
-    public Resena() {
-        this.descripcion = "";
-        this.fecha = "";
+    private Usuario usuario;
+
+
+
+    @ManyToOne
+
+    private Curso curso;
+
+
+
+    // Getters y Setters
+
+
+
+    public String getContenido() {
+
+        return contenido;
+
     }
 
-    public Resena(Long id, String descripcion, String fecha, UsuarioCurso usuarioCurso) {
-        this.id = id;
-        this.descripcion = descripcion;
-        this.fecha = fecha;
-        this.usuarioCurso = usuarioCurso;
+
+
+    public void setContenido(String contenido) {
+
+        this.contenido = contenido;
+
     }
 
-    // Getters y setters
 
-    public Long getId() {
-        return id;
+
+    public int getCalificacion() {
+
+        return calificacion;
+
     }
 
-    public void setId(Long id) {
-        this.id = id;
+
+
+    public void setCalificacion(int calificacion) {
+
+        this.calificacion = calificacion;
+
     }
 
-    public String getDescripcion() {
-        return descripcion;
+
+
+    public Usuario getUsuario() {
+
+        return usuario;
+
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+
+
+    public void setUsuario(Usuario usuario) {
+
+        this.usuario = usuario;
+
     }
 
-    public String getFecha() {
-        return fecha;
+
+
+    public Curso getCurso() {
+
+        return curso;
+
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+
+
+    public void setCurso(Optional<Curso> curso2) {
+
+        // this.curso = curso;
+
     }
 
-    public UsuarioCurso getUsuarioCurso() {
-        return usuarioCurso;
-    }
-
-    public void setUsuarioCurso(UsuarioCurso usuarioCurso) {
-        this.usuarioCurso = usuarioCurso;
-    }
 }
+

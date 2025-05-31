@@ -3,6 +3,8 @@
 package com.edutech.edutech_api.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
@@ -17,8 +19,8 @@ import java.util.List;
 @Entity
 @Table(name = "cursos")
 public class Curso {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String sigla;
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -32,7 +34,7 @@ public class Curso {
     private boolean estado;
 
     @NotNull(message = "El valor es obligatorio")
-    private double valor;
+    private String valor;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id")
@@ -49,7 +51,7 @@ public class Curso {
 
     public Curso() {}
 
-    public Curso(String sigla, String nombre, String descripcion, boolean estado, double valor) {
+    public Curso(String sigla, String nombre, String descripcion, boolean estado, String valor) {
         this.sigla = sigla;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -89,12 +91,12 @@ public class Curso {
         this.estado = estado;
     }
 
-    public double getValor() {
+    public String getValor() {
         return valor;
     }
 
-    public void setValor(double valor) {
-        this.valor = valor;
+    public void setValor(String valor2) {
+        this.valor = valor2;
     }
 
     public Instructor getInstructor() {

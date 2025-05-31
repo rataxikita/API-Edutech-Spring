@@ -72,7 +72,7 @@ public class UsuarioController {
     }
 
     // LISTAR TODOS
-    @GetMapping
+    @GetMapping("/listar")
     public ResponseEntity<List<Usuario>> listarUsuarios() {
         return ResponseEntity.ok(usuarioRepo.findAll());
     }

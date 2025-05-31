@@ -15,12 +15,12 @@ import com.edutech.edutech_api.model.Alumno;
 import com.edutech.edutech_api.service.AlumnoService;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/alumnos")
 public class AlumnoController {
     @Autowired
     private AlumnoService alumnoService;
 
-    @PostMapping
+    @PostMapping("/crear")
     public String almacenar(@RequestBody Alumno alumno){
         return alumnoService.crearAlumno(alumno);
     }
