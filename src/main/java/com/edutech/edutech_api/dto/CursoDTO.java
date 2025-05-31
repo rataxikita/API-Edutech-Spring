@@ -8,7 +8,7 @@ public class CursoDTO {
     private String nombre;
     private String descripcion;
     private boolean estado;
-    private String valor;
+    private Double valor;
 
     public String getSigla() {
         return sigla;
@@ -39,10 +39,10 @@ public class CursoDTO {
         this.estado = estado;
     
     }
-    public String getValor() {
+    public Double getValor() {
         return valor;
     }
-    public void setValor(String valor) {
+    public void setValor(Double valor) {
         this.valor = valor;
     }
 

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.edutech.edutech_api.dto.ResenaDTO;
 import com.edutech.edutech_api.model.Curso;
 import com.edutech.edutech_api.model.Resena;
-
 import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.repository.ResenaRepository;
 import com.edutech.edutech_api.repository.UsuarioRepository;

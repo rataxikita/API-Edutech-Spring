@@ -20,7 +20,6 @@ import java.util.List;
 @Table(name = "cursos")
 public class Curso {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String sigla;
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -34,7 +33,7 @@ public class Curso {
     private boolean estado;
 
     @NotNull(message = "El valor es obligatorio")
-    private String valor;
+    private Double valor;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id")
@@ -51,7 +50,7 @@ public class Curso {
 
     public Curso() {}
 
-    public Curso(String sigla, String nombre, String descripcion, boolean estado, String valor) {
+    public Curso(String sigla, String nombre, String descripcion, boolean estado, Double valor) {
         this.sigla = sigla;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -91,12 +90,12 @@ public class Curso {
         this.estado = estado;
     }
 
-    public String getValor() {
+    public Double getValor() {
         return valor;
     }
 
-    public void setValor(String valor2) {
-        this.valor = valor2;
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 
     public Instructor getInstructor() {
