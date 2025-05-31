@@ -22,14 +22,14 @@ public class Instructor extends Usuario {
     @Column(unique = true)
     private String rut;
 
-    @Column(unique = true)
-    private String correo;
+    // @Column(unique = true)
+    // private String correo;
 
-    private String clave;
+    // private String clave;
 
-    private String nombre;
+    // private String nombre;
     private String apellido;
-    private String estado; 
+    private Boolean estado; 
 
     @OneToMany(mappedBy = "instructor")
     private List<Curso> cursos;
@@ -53,8 +53,8 @@ public class Instructor extends Usuario {
     public String getApellido() { return apellido; }
     public void setApellido(String apellido) { this.apellido = apellido; }
 
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public Boolean getEstado() { return estado; }
+    public void setEstado(Boolean estado) { this.estado = estado; }
 
     public List<Curso> getCursos() { return cursos; }
     public void setCursos(List<Curso> cursos) { this.cursos = cursos; }

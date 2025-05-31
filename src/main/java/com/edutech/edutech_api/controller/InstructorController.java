@@ -62,9 +62,7 @@ public class InstructorController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Correo ya registrado");
     }
 
-    if (i.getEstado() == null) {
-        i.setEstado("activo");
-    }
+    i.setEstado(true);
 
     return ResponseEntity.ok(instructorRepo.save(i));
 }
