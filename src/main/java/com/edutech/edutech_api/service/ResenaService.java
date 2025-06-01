@@ -27,18 +27,20 @@ private CursoRepository cursoRepository;
 
 public Resena crearResena(ResenaDTO dto) {
     Usuario usuario = usuarioRepository.findByCorreo(dto.getCorreoUsuario());
-    Optional<Curso> curso = cursoRepository.findBySigla(dto.getSiglaCurso());
+    Optional<Curso> cursoOpt = cursoRepository.findBySigla(dto.getSiglaCurso());
     
-    if (usuario == null || curso == null) {
+    if (usuario == null || !cursoOpt.isPresent()) {
     throw new RuntimeException("Usuario o curso no encontrado");
     }
-    
+    Curso curso = cursoOpt.get();
+
     Resena resena = new Resena();
-    resena.setContenido(dto.getDescripcion());
+    resena.setContenido(dto.getContenido());
     resena.setCalificacion(dto.getCalificacion());
     resena.setUsuario(usuario);
     resena.setCurso(curso);
     
+
     return resenaRepository.save(resena);
     }
     

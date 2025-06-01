@@ -75,10 +75,8 @@ public class Resena {
 
     }
 
-    public void setCurso(Optional<Curso> curso2) {
-
-        // this.curso = curso;
-
+    public void setCurso(Curso curso) { // Cambia Optional<Curso> a Curso
+        this.curso = curso;
     }
 
 }

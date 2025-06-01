@@ -4,19 +4,19 @@ package com.edutech.edutech_api.dto;
 
 public class ResenaDTO {
     private Long id;
-    private String descripcion;
+    private String contenido;
     private int calificacion;
     private String correoUsuario;
     private String siglaCurso;
     
-    public String getDescripcion() {
-        return descripcion;
-    }
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
     public int getCalificacion() {
         return calificacion;
+    }
+    public String getContenido() {
+        return contenido;
+    }
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
     }
     public void setCalificacion(int calificacion) {
         this.calificacion = calificacion;
