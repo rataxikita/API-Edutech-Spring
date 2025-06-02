@@ -33,7 +33,6 @@ public class Incidencia {
         this.id = (long) 0;
         this.titulo = "";
         this.descripcion = "";
-        this.respuesta = "";
     }
 
     public Long getId() {
@@ -86,3 +85,4 @@ public class Incidencia {
 
     
 }
+//Diego Sotelo G.

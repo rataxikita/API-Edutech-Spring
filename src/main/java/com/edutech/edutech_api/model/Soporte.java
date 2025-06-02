@@ -2,6 +2,9 @@ package com.edutech.edutech_api.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,9 +18,11 @@ public class Soporte {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    
     @NotBlank(message = "El nombre no puede estar vacío")
     private String nombreSoporte;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "soporte")
     private List<Incidencia> incidencias = new ArrayList<>();
 
@@ -45,3 +50,4 @@ public class Soporte {
         this.incidencias = incidencias;
     }
 }
+//Diego Sotelo G.
