@@ -4,7 +4,8 @@ public enum Rol {
     ADMINISTRADOR("ADMIN"),
     GERENTE_CURSOS("GERENTE"),
     INSTRUCTOR("INSTRUCTOR"),
-    ESTUDIANTE("ESTUDIANTE");
+    ESTUDIANTE("ESTUDIANTE"),
+    SOPORTE("SOPORTE");
 
     private final String valor;
 
@@ -43,5 +44,9 @@ public enum Rol {
 
     public boolean puedeAccederAReportes() {
         return this == ADMINISTRADOR || this == GERENTE_CURSOS;
+    }
+
+    public boolean puedeGestionarIncidencias() {
+        return this == SOPORTE || this == ADMINISTRADOR;
     }
 } 

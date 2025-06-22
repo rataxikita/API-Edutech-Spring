@@ -1,20 +1,37 @@
 // Catalina Rosales->rataxikita
 package com.edutech.edutech_api.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.edutech_api.model.Curso;
 import com.edutech.edutech_api.model.Instructor;
+import com.edutech.edutech_api.model.GerenteCursos;
+import com.edutech.edutech_api.model.Rol;
 import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.repository.InstructorRepository;
+import com.edutech.edutech_api.repository.GerenteCursosRepository;
 import java.util.Map;
 
 @Service
 public class GerenteCursosService {
 
+    @Autowired
     private CursoRepository cursoRepository;
 
+    @Autowired
     private InstructorRepository instructorRepository;
+
+    @Autowired
+    private GerenteCursosRepository gerenteCursosRepository;
+
+    // Variable para simular el usuario autenticado (en producción esto vendría del contexto de seguridad)
+    private Long usuarioAutenticadoId;
+
+    // Método para establecer el usuario autenticado (simulación)
+    public void setUsuarioAutenticado(Long usuarioId) {
+        this.usuarioAutenticadoId = usuarioId;
+    }
 
     // Gestión de Cursos
     public Curso crearCurso(Curso curso) {
@@ -45,7 +62,26 @@ public class GerenteCursosService {
         cursoRepository.deleteById(id);
     }
 
-    // Gestión de Instructores
+    // Gestión de Instructores - SOLO GERENTE DE CURSOS PUEDE CREAR
+    public Instructor crearInstructor(Instructor instructor) {
+        validarPermisosGerente();
+        
+        // Validar que no exista un instructor con el mismo RUT o correo
+        if (instructorRepository.findByRut(instructor.getRut()) != null) {
+            throw new RuntimeException("Ya existe un instructor con el RUT: " + instructor.getRut());
+        }
+        
+        if (instructorRepository.findByCorreo(instructor.getCorreo()) != null) {
+            throw new RuntimeException("Ya existe un instructor con el correo: " + instructor.getCorreo());
+        }
+        
+        // Asegurar que el rol sea INSTRUCTOR
+        instructor.setRol(Rol.INSTRUCTOR);
+        instructor.setEstado(true);
+        
+        return instructorRepository.save(instructor);
+    }
+
     public Instructor asignarInstructor(String cursoId, Long instructorId) {
         validarPermisosGerente();
         Curso curso = cursoRepository.findById(cursoId)
@@ -109,8 +145,20 @@ public class GerenteCursosService {
 
     // Métodos privados de ayuda
     private void validarPermisosGerente() {
-        // Implementar validación de permisos
-        // Este método debería ser llamado al inicio de cada operación
+        if (usuarioAutenticadoId == null) {
+            throw new RuntimeException("Usuario no autenticado");
+        }
+        
+        GerenteCursos gerente = gerenteCursosRepository.findById(usuarioAutenticadoId)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        if (!Rol.GERENTE_CURSOS.equals(gerente.getRol())) {
+            throw new RuntimeException("Acceso denegado. Solo los gerentes de cursos pueden realizar esta operación.");
+        }
+        
+        if (!gerente.isEstado()) {
+            throw new RuntimeException("Usuario deshabilitado");
+        }
     }
 
     private double calcularPromedioAprobacion(Curso curso) {

@@ -18,10 +18,14 @@ public class SoporteController {
     @Autowired
     private SoporteService soporteService;
 
+    /*
     @PostMapping
     public String almacenar(@RequestBody Soporte soporte){
-        return soporteService.crearSoporte(soporte);
+        // ESTE ENDPOINT HA SIDO DESHABILITADO
+        // SOLO EL ADMINISTRADOR PUEDE CREAR SOPORTE
+        return "Acceso denegado. Solo los administradores pueden crear soporte. Use /api/administrador/soporte";
     }
+    */
 
     @GetMapping
     public List<Soporte> listar(){

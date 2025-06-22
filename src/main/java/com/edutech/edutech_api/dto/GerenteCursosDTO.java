@@ -18,16 +18,22 @@ public class GerenteCursosDTO {
     @Size(min = 6, message = "La clave debe tener al menos 6 caracteres")
     private String clave;
 
-    @NotBlank(message = "El área de especialización es obligatoria")
-    private String areaEspecializacion;
+    private boolean estado = true;
 
     public GerenteCursosDTO() {}
 
-    public GerenteCursosDTO(String nombre, String correo, String clave, String areaEspecializacion) {
+    public GerenteCursosDTO(String nombre, String correo, String clave) {
         this.nombre = nombre;
         this.correo = correo;
         this.clave = clave;
-        this.areaEspecializacion = areaEspecializacion;
+        this.estado = true;
+    }
+
+    public GerenteCursosDTO(String nombre, String correo, String clave, boolean estado) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.clave = clave;
+        this.estado = estado;
     }
 
     public String getNombre() {
@@ -54,11 +60,11 @@ public class GerenteCursosDTO {
         this.clave = clave;
     }
 
-    public String getAreaEspecializacion() {
-        return areaEspecializacion;
+    public boolean isEstado() {
+        return estado;
     }
 
-    public void setAreaEspecializacion(String areaEspecializacion) {
-        this.areaEspecializacion = areaEspecializacion;
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
 } 

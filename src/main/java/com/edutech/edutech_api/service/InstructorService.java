@@ -12,6 +12,9 @@ import com.edutech.edutech_api.model.Curso;
 import com.edutech.edutech_api.model.Evaluacion;
 import com.edutech.edutech_api.model.Contenido;
 import com.edutech.edutech_api.model.Pregunta;
+import com.edutech.edutech_api.model.Administrador;
+import com.edutech.edutech_api.model.Alumno;
+import com.edutech.edutech_api.model.GerenteCursos;
 import com.edutech.edutech_api.repository.InstructorRepository;
 import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.repository.EvaluacionRepository;
@@ -111,7 +114,14 @@ public class InstructorService {
             "nombreCurso", curso.getNombre(),
             "totalEstudiantes", curso.getInscritos().size(),
             "estudiantesActivos", curso.getInscritos().stream()
-                .filter(inscripcion -> inscripcion.getUsuario().isEstado())
+                .filter(inscripcion -> {
+                    Object usuario = inscripcion.getUsuario();
+                    if (usuario instanceof Administrador) return ((Administrador) usuario).isEstado();
+                    if (usuario instanceof Instructor) return ((Instructor) usuario).isEstado();
+                    if (usuario instanceof Alumno) return ((Alumno) usuario).isEstado();
+                    if (usuario instanceof GerenteCursos) return ((GerenteCursos) usuario).isEstado();
+                    return false;
+                })
                 .count(),
             "promedioProgreso", calcularPromedioProgreso(curso)
         );

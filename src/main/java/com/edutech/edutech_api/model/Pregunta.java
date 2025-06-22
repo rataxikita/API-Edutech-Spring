@@ -6,16 +6,25 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "preguntas")
 public class Pregunta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Solo relación con Alumno (quien hace la pregunta) e Instructor (quien responde)
     @ManyToOne
-    private Usuario usuario;
+    @JoinColumn(name = "alumno_id")
+    private Alumno alumno;
+
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
 
     @ManyToOne
     private Curso curso;
@@ -28,9 +37,10 @@ public class Pregunta {
     public Pregunta() {
     }
 
-    public Pregunta(Long id, Usuario usuario, Curso curso, String contenido, String fecha) {
+    public Pregunta(Long id, Alumno alumno, Instructor instructor, Curso curso, String contenido, String fecha) {
         this.id = id;
-        this.usuario = usuario;
+        this.alumno = alumno;
+        this.instructor = instructor;
         this.curso = curso;
         this.contenido = contenido;
         this.fecha = fecha;
@@ -44,12 +54,20 @@ public class Pregunta {
         this.id = id;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Alumno getAlumno() {
+        return alumno;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setAlumno(Alumno alumno) {
+        this.alumno = alumno;
+    }
+
+    public Instructor getInstructor() {
+        return instructor;
+    }
+
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
     }
 
     public Curso getCurso() {

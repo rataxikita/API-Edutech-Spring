@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edutech.edutech_api.model.Instructor;
 import com.edutech.edutech_api.model.Pregunta;
 import com.edutech.edutech_api.model.Respuesta;
+import com.edutech.edutech_api.model.Rol;
 import com.edutech.edutech_api.repository.InstructorRepository;
 import com.edutech.edutech_api.repository.PreguntaRepository;
 import com.edutech.edutech_api.repository.RespuestaRepository;
@@ -26,9 +28,12 @@ import com.edutech.edutech_api.model.Evaluacion;
 import com.edutech.edutech_api.service.InstructorService;
 import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.model.Curso;
+import com.edutech.edutech_api.dto.InstructorDTO;
+
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/instructores")
+@RequestMapping("/api/instructores")
 public class InstructorController {
 
     @Autowired
@@ -46,88 +51,172 @@ public class InstructorController {
     @Autowired
     private InstructorService instructorService;
 
-    // CRUD básico
+    // CRUD básico - SOLO LECTURA Y ACTUALIZACIÓN
+    // LA CREACIÓN DE INSTRUCTORES SOLO LA PUEDE HACER EL GERENTE DE CURSOS
 
+    /*
     @PostMapping
-    public ResponseEntity<?> crear(@RequestBody Instructor i) {
-    // Validar RUT
-    Instructor existePorRut = instructorRepo.findByRut(i.getRut());
-    if (existePorRut != null) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("RUT ya registrado");
+    public ResponseEntity<?> crear(@Valid @RequestBody InstructorDTO instructorDTO) {
+        // ESTE ENDPOINT HA SIDO DESHABILITADO
+        // SOLO EL GERENTE DE CURSOS PUEDE CREAR INSTRUCTORES
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body("Acceso denegado. Solo los gerentes de cursos pueden crear instructores. Use /api/gerente-cursos/instructores");
     }
-
-    // Validar correo
-    Instructor existePorCorreo = instructorRepo.findByCorreo(i.getCorreo());
-    if (existePorCorreo != null) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Correo ya registrado");
-    }
-
-    i.setEstado(true);
-
-    return ResponseEntity.ok(instructorRepo.save(i));
-}
+    */
 
     @GetMapping
-    public List<Instructor> listar() {
-        return instructorRepo.findAll();
+    public ResponseEntity<List<Instructor>> listar() {
+        try {
+            List<Instructor> instructores = instructorRepo.findAll();
+            return ResponseEntity.ok(instructores);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> obtener(@PathVariable Long id) {
-        Instructor i = instructorRepo.findById(id).orElse(null);
-        if (i == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(i);
+        try {
+            Instructor instructor = instructorRepo.findById(id).orElse(null);
+            if (instructor == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Instructor con ID " + id + " no encontrado");
+            }
+            return ResponseEntity.ok(instructor);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al obtener instructor: " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Instructor datos) {
-        Instructor i = instructorRepo.findById(id).orElse(null);
-        if (i == null) return ResponseEntity.notFound().build();
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Instructor datos) {
+        try {
+            Instructor instructor = instructorRepo.findById(id).orElse(null);
+            if (instructor == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Instructor con ID " + id + " no encontrado");
+            }
 
-        i.setNombre(datos.getNombre());
-        i.setApellido(datos.getApellido());
-        i.setEstado(datos.getEstado());
-        return ResponseEntity.ok(instructorRepo.save(i));
+            // Validar que el nuevo correo no esté en uso por otro instructor
+            if (!instructor.getCorreo().equals(datos.getCorreo())) {
+                Instructor existePorCorreo = instructorRepo.findByCorreo(datos.getCorreo());
+                if (existePorCorreo != null) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Error: El correo " + datos.getCorreo() + " ya está en uso");
+                }
+            }
+
+            // Validar que el nuevo RUT no esté en uso por otro instructor
+            if (!instructor.getRut().equals(datos.getRut())) {
+                Instructor existePorRut = instructorRepo.findByRut(datos.getRut());
+                if (existePorRut != null) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Error: El RUT " + datos.getRut() + " ya está en uso");
+                }
+            }
+
+            // Actualizar campos
+            instructor.setNombre(datos.getNombre());
+            instructor.setApellido(datos.getApellido());
+            instructor.setCorreo(datos.getCorreo());
+            instructor.setRut(datos.getRut());
+            instructor.setEstado(datos.isEstado());
+            
+            // Solo actualizar clave si se proporciona una nueva
+            if (datos.getClave() != null && !datos.getClave().isEmpty()) {
+                instructor.setClave(datos.getClave());
+            }
+
+            Instructor instructorActualizado = instructorRepo.save(instructor);
+            return ResponseEntity.ok(instructorActualizado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error al actualizar instructor: " + e.getMessage());
+        }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+        try {
+            Instructor instructor = instructorRepo.findById(id).orElse(null);
+            if (instructor == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Instructor con ID " + id + " no encontrado");
+            }
+
+            // Verificar si tiene cursos asignados
+            if (instructor.getCursos() != null && !instructor.getCursos().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("No se puede eliminar el instructor porque tiene cursos asignados");
+            }
+
+            instructorRepo.deleteById(id);
+            return ResponseEntity.ok("Instructor eliminado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al eliminar instructor: " + e.getMessage());
+        }
+    }
 
     // Ver cursos que dicta
     @GetMapping("/{id}/cursos")
     public ResponseEntity<?> cursosDelInstructor(@PathVariable Long id) {
-        List<Curso> cursos = cursoRepo.findAll();
-        List<Curso> cursosInstructor = new ArrayList<>();
-
-        for (Curso c : cursos) {
-            if (c.getInstructor().getId().equals(id)) {
-                cursosInstructor.add(c);
+        try {
+            Instructor instructor = instructorRepo.findById(id).orElse(null);
+            if (instructor == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Instructor con ID " + id + " no encontrado");
             }
-        }
 
-        return ResponseEntity.ok(cursosInstructor);
+            List<Curso> cursos = cursoRepo.findAll();
+            List<Curso> cursosInstructor = new ArrayList<>();
+
+            for (Curso c : cursos) {
+                if (c.getInstructor() != null && c.getInstructor().getId().equals(id)) {
+                    cursosInstructor.add(c);
+                }
+            }
+
+            return ResponseEntity.ok(cursosInstructor);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al obtener cursos del instructor: " + e.getMessage());
+        }
     }
 
     // Ver preguntas de estudiantes
     @GetMapping("/{id}/preguntas")
     public ResponseEntity<?> verPreguntas(@PathVariable Long id) {
-        List<Pregunta> preguntas = preguntaRepo.findAll();
-        List<Pregunta> preguntasInstructor = new ArrayList<>();
-
-        for (Pregunta p : preguntas) {
-            if (p.getCurso().getInstructor().getId().equals(id)) {
-                preguntasInstructor.add(p);
+        try {
+            Instructor instructor = instructorRepo.findById(id).orElse(null);
+            if (instructor == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Instructor con ID " + id + " no encontrado");
             }
-        }
 
-        return ResponseEntity.ok(preguntasInstructor);
+            List<Pregunta> preguntas = preguntaRepo.findByInstructorId(id);
+            return ResponseEntity.ok(preguntas);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al obtener preguntas: " + e.getMessage());
+        }
     }
 
     // Responder preguntas
     @PostMapping("/{id}/responder")
     public ResponseEntity<?> responder(@PathVariable Long id, @RequestBody Respuesta r) {
-        if (!r.getPregunta().getCurso().getInstructor().getId().equals(id)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No puedes responder esta pregunta");
+        try {
+            if (!r.getPregunta().getInstructor().getId().equals(id)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("No tienes permisos para responder esta pregunta");
+            }
+            Respuesta respuestaGuardada = respuestaRepo.save(r);
+            return ResponseEntity.ok(respuestaGuardada);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error al responder pregunta: " + e.getMessage());
         }
-        return ResponseEntity.ok(respuestaRepo.save(r));
     }
 
     // Gestión de Contenido
