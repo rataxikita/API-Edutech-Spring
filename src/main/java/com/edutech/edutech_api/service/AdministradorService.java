@@ -1,135 +1,206 @@
 // Catalina Rosales->rataxikita
 package com.edutech.edutech_api.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.edutech.edutech_api.model.Usuario;
+import com.edutech.edutech_api.model.Administrador;
+import com.edutech.edutech_api.model.Alumno;
+import com.edutech.edutech_api.model.GerenteCursos;
+import com.edutech.edutech_api.model.Soporte;
 import com.edutech.edutech_api.model.Rol;
-import com.edutech.edutech_api.repository.UsuarioRepository;
+import com.edutech.edutech_api.repository.AdministradorRepository;
+import com.edutech.edutech_api.repository.AlumnoRepository;
+import com.edutech.edutech_api.repository.GerenteCursosRepository;
+import com.edutech.edutech_api.repository.SoporteRepository;
+
+import java.util.List;
 
 @Service
 public class AdministradorService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private AdministradorRepository administradorRepository;
 
-    public Usuario crearUsuario(Usuario usuario) {
-        // Validar que el correo no exista
-        if (usuarioRepository.findByCorreo(usuario.getCorreo()) != null) {
-            throw new RuntimeException("El correo ya está registrado");
+    @Autowired
+    private AlumnoRepository alumnoRepository;
+
+    @Autowired
+    private GerenteCursosRepository gerenteCursosRepository;
+
+    @Autowired
+    private SoporteRepository soporteRepository;
+
+    // Variable para simular el usuario autenticado (en producción esto vendría del contexto de seguridad)
+    private Long usuarioAutenticadoId;
+
+    // Método para establecer el usuario autenticado (simulación)
+    public void setUsuarioAutenticado(Long usuarioId) {
+        this.usuarioAutenticadoId = usuarioId;
+    }
+
+    // SOLO ADMINISTRADOR PUEDE CREAR ALUMNOS
+    public Alumno crearAlumno(Alumno alumno) {
+        validarPermisosAdministrador();
+        
+        // Validar que no exista un alumno con el mismo correo
+        if (alumnoRepository.findByCorreo(alumno.getCorreo()) != null) {
+            throw new RuntimeException("Ya existe un alumno con el correo: " + alumno.getCorreo());
         }
         
-        // Validar campos obligatorios
-        if (usuario.getCorreo() == null || usuario.getClave() == null || usuario.getRol() == null) {
-            throw new RuntimeException("Correo, clave y rol son obligatorios");
+        // Asegurar que el rol sea ESTUDIANTE
+        alumno.setRol(Rol.ESTUDIANTE);
+        alumno.setEstado(true);
+        
+        return alumnoRepository.save(alumno);
+    }
+
+    // SOLO ADMINISTRADOR PUEDE CREAR GERENTES DE CURSOS
+    public GerenteCursos crearGerenteCursos(GerenteCursos gerente) {
+        validarPermisosAdministrador();
+        
+        // Validar que no exista un gerente con el mismo correo
+        if (gerenteCursosRepository.findByCorreo(gerente.getCorreo()) != null) {
+            throw new RuntimeException("Ya existe un gerente con el correo: " + gerente.getCorreo());
         }
-
-        // Validar que el rol sea válido
-        try {
-            Rol.fromString(usuario.getRol().getValor());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Rol no válido: " + usuario.getRol());
-        }
-
-        usuario.setEstado(true);
-        return usuarioRepository.save(usuario);
+        
+        // Asegurar que el rol sea GERENTE_CURSOS
+        gerente.setRol(Rol.GERENTE_CURSOS);
+        gerente.setEstado(true);
+        
+        return gerenteCursosRepository.save(gerente);
     }
 
-    public List<Usuario> obtenerTodosLosUsuarios() {
-        return usuarioRepository.findAll();
+    // SOLO ADMINISTRADOR PUEDE CREAR SOPORTE
+    public Soporte crearSoporte(Soporte soporte) {
+        validarPermisosAdministrador();
+        
+        // La entidad Soporte solo tiene nombreSoporte, no hay validaciones adicionales
+        return soporteRepository.save(soporte);
     }
 
-    public List<Usuario> obtenerUsuariosPorRol(Rol rol) {
-        return usuarioRepository.findByRol(rol);
+    // Gestión de usuarios existentes
+    public List<Alumno> listarAlumnos() {
+        validarPermisosAdministrador();
+        return alumnoRepository.findAll();
     }
 
-    public Usuario obtenerUsuarioPorId(Long id) {
-        return usuarioRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public List<GerenteCursos> listarGerentes() {
+        validarPermisosAdministrador();
+        return gerenteCursosRepository.findAll();
     }
 
-    public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado) {
-        Usuario usuario = usuarioRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public List<Soporte> listarSoporte() {
+        validarPermisosAdministrador();
+        return soporteRepository.findAll();
+    }
 
-        // Validar que el nuevo correo no esté en uso por otro usuario
-        if (!usuario.getCorreo().equals(usuarioActualizado.getCorreo()) &&
-            usuarioRepository.findByCorreo(usuarioActualizado.getCorreo()) != null) {
-            throw new RuntimeException("El correo ya está en uso");
-        }
+    public Alumno buscarAlumnoPorId(Long id) {
+        validarPermisosAdministrador();
+        return alumnoRepository.findById(id).orElse(null);
+    }
 
-        // Validar que el rol sea válido si se está actualizando
-        if (usuarioActualizado.getRol() != null) {
-            try {
-                Rol.fromString(usuarioActualizado.getRol().getValor());
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException("Rol no válido: " + usuarioActualizado.getRol());
+    public GerenteCursos buscarGerentePorId(Long id) {
+        validarPermisosAdministrador();
+        return gerenteCursosRepository.findById(id).orElse(null);
+    }
+
+    public Soporte buscarSoportePorId(Long id) {
+        validarPermisosAdministrador();
+        return soporteRepository.findById(id).orElse(null);
+    }
+
+    public Alumno actualizarAlumno(Long id, Alumno alumnoActualizado) {
+        validarPermisosAdministrador();
+        
+        Alumno alumno = alumnoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+        
+        // Validar que el nuevo correo no esté en uso por otro alumno
+        if (!alumno.getCorreo().equals(alumnoActualizado.getCorreo())) {
+            if (alumnoRepository.findByCorreo(alumnoActualizado.getCorreo()) != null) {
+                throw new RuntimeException("Ya existe un alumno con el correo: " + alumnoActualizado.getCorreo());
             }
         }
-
-        usuario.setNombre(usuarioActualizado.getNombre());
-        usuario.setCorreo(usuarioActualizado.getCorreo());
-        if (usuarioActualizado.getClave() != null && !usuarioActualizado.getClave().isEmpty()) {
-            usuario.setClave(usuarioActualizado.getClave());
+        
+        alumno.setNombre(alumnoActualizado.getNombre());
+        alumno.setApellidos(alumnoActualizado.getApellidos());
+        alumno.setCorreo(alumnoActualizado.getCorreo());
+        alumno.setEstado(alumnoActualizado.isEstado());
+        
+        if (alumnoActualizado.getClave() != null && !alumnoActualizado.getClave().isEmpty()) {
+            alumno.setClave(alumnoActualizado.getClave());
         }
-        if (usuarioActualizado.getRol() != null) {
-            usuario.setRol(usuarioActualizado.getRol());
-        }
-        usuario.setEstado(usuarioActualizado.isEstado());
-
-        return usuarioRepository.save(usuario);
+        
+        return alumnoRepository.save(alumno);
     }
 
-    public void desactivarUsuario(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
+    public GerenteCursos actualizarGerente(Long id, GerenteCursos gerenteActualizado) {
+        validarPermisosAdministrador();
+        
+        GerenteCursos gerente = gerenteCursosRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Gerente no encontrado"));
+        
+        // Validar que el nuevo correo no esté en uso por otro gerente
+        if (!gerente.getCorreo().equals(gerenteActualizado.getCorreo())) {
+            if (gerenteCursosRepository.findByCorreo(gerenteActualizado.getCorreo()) != null) {
+                throw new RuntimeException("Ya existe un gerente con el correo: " + gerenteActualizado.getCorreo());
+            }
+        }
+        
+        gerente.setNombre(gerenteActualizado.getNombre());
+        gerente.setCorreo(gerenteActualizado.getCorreo());
+        gerente.setEstado(gerenteActualizado.isEstado());
+        
+        if (gerenteActualizado.getClave() != null && !gerenteActualizado.getClave().isEmpty()) {
+            gerente.setClave(gerenteActualizado.getClave());
+        }
+        
+        return gerenteCursosRepository.save(gerente);
+    }
+
+    public Soporte actualizarSoporte(Long id, Soporte soporteActualizado) {
+        validarPermisosAdministrador();
+        
+        Soporte soporte = soporteRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Soporte no encontrado"));
+        
+        // Solo actualizar el nombreSoporte
+        soporte.setNombreSoporte(soporteActualizado.getNombreSoporte());
+        
+        return soporteRepository.save(soporte);
+    }
+
+    public void eliminarAlumno(Long id) {
+        validarPermisosAdministrador();
+        alumnoRepository.deleteById(id);
+    }
+
+    public void eliminarGerenteCursos(Long id) {
+        validarPermisosAdministrador();
+        gerenteCursosRepository.deleteById(id);
+    }
+
+    public void eliminarSoporte(Long id) {
+        validarPermisosAdministrador();
+        soporteRepository.deleteById(id);
+    }
+
+    // Métodos privados de ayuda
+    private void validarPermisosAdministrador() {
+        if (usuarioAutenticadoId == null) {
+            throw new RuntimeException("Usuario no autenticado");
+        }
+        
+        Administrador administrador = administradorRepository.findById(usuarioAutenticadoId)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         
-        // No permitir desactivar administradores
-        if (usuario.esAdministrador()) {
-            throw new RuntimeException("No se puede desactivar un administrador");
+        if (!Rol.ADMINISTRADOR.equals(administrador.getRol())) {
+            throw new RuntimeException("Acceso denegado. Solo los administradores pueden realizar esta operación.");
         }
         
-        usuario.setEstado(false);
-        usuarioRepository.save(usuario);
+        if (!administrador.isEstado()) {
+            throw new RuntimeException("Usuario deshabilitado");
+        }
     }
-
-    public void eliminarUsuario(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-            
-        // No permitir eliminar administradores
-        if (usuario.esAdministrador()) {
-            throw new RuntimeException("No se puede eliminar un administrador");
-        }
-        
-        usuarioRepository.deleteById(id);
-    }
-
-    public ResponseEntity<?> login(String correo, String clave) {
-        Usuario usuario = usuarioRepository.findByCorreoAndClave(correo, clave);
-        
-        if (usuario == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Credenciales incorrectas");
-        }
-
-        if (!usuario.isEstado()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body("Usuario inactivo");
-        }
-
-        // Verificar que sea administrador
-        if (!usuario.esAdministrador()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body("Acceso denegado: se requieren privilegios de administrador");
-        }
-
-        return ResponseEntity.ok(usuario);
-    }
-}
-// Catalina Rosales->rataxikita 
+} 
