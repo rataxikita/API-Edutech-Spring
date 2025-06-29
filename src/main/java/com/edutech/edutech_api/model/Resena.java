@@ -1,7 +1,6 @@
 //Anais Llancapan- peitou1
 package com.edutech.edutech_api.model;
 
-import java.util.Optional;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;

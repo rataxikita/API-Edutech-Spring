@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import com.edutech.edutech_api.model.Alumno;
 import com.edutech.edutech_api.model.GerenteCursos;
 import com.edutech.edutech_api.model.Soporte;
-import com.edutech.edutech_api.model.Rol;
 import com.edutech.edutech_api.service.AdministradorService;
 import com.edutech.edutech_api.dto.GerenteCursosDTO;
 

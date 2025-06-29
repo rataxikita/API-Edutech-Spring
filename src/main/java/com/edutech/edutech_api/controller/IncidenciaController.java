@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edutech.edutech_api.dto.IncidenciaPreguntaDto;
 import com.edutech.edutech_api.dto.IncidenciaRespuestaDto;
+import com.edutech.edutech_api.dto.IncidenciaResumenDto;
 import com.edutech.edutech_api.model.Incidencia;
 import com.edutech.edutech_api.service.IncidenciaService;
 
@@ -24,16 +25,17 @@ public class IncidenciaController {
     @Autowired
     private IncidenciaService incidenciaService;
 
-        @PostMapping
+    @PostMapping
     public ResponseEntity<Incidencia> crearIncidencia(@Valid @RequestBody IncidenciaPreguntaDto dto) {
         Incidencia nueva = incidenciaService.crearIncidencia(dto);
         return ResponseEntity.ok(nueva);
     }
 
     @GetMapping
-    public List<Incidencia> listyar(){
-        return incidenciaService.listar();
+    public ResponseEntity<List<IncidenciaResumenDto>> getResumen() {
+        return ResponseEntity.ok(incidenciaService.listarResumido());
     }
+
 
 @PutMapping("/respuesta")
 public ResponseEntity<?> responder(@RequestBody IncidenciaRespuestaDto resDto){

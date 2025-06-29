@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.edutech.edutech_api.dto.IncidenciaPreguntaDto;
 import com.edutech.edutech_api.dto.IncidenciaRespuestaDto;
+import com.edutech.edutech_api.dto.IncidenciaResumenDto;
 import com.edutech.edutech_api.model.Alumno;
 import com.edutech.edutech_api.model.Incidencia;
 import com.edutech.edutech_api.model.Soporte;
@@ -61,6 +62,29 @@ public Incidencia responderIncidencia(Long id, IncidenciaRespuestaDto respuestaD
     return incidenciaRepository.save(incidencia);
 }
 
+public List<IncidenciaResumenDto> listarResumido() {
+    return incidenciaRepository.findAll().stream().map(inc -> {
+        IncidenciaResumenDto dto = new IncidenciaResumenDto();
+        dto.setId(inc.getId());
+        dto.setTitulo(inc.getTitulo());
+        dto.setDescripcion(inc.getDescripcion());
+        dto.setRespuesta(inc.getRespuesta());
+        dto.setResuelta(inc.getRespuesta() != null && !inc.getRespuesta().isBlank());
+
+        if (inc.getAlumno() != null) {
+            dto.setAlumnoId(inc.getAlumno().getId());
+            dto.setAlumnoNombre(inc.getAlumno().getNombre());
+            dto.setAlumnoCorreo(inc.getAlumno().getCorreo());
+        }
+
+        if (inc.getSoporte() != null) {
+            dto.setSoporteId(inc.getSoporte().getId());
+            dto.setSoporteNombre(inc.getSoporte().getNombreSoporte());
+        }
+
+        return dto;
+    }).toList();
+}
 
 }
 //Diego Sotelo G.

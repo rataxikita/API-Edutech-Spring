@@ -25,8 +25,10 @@ import com.edutech.edutech_api.repository.InstructorRepository;
 import com.edutech.edutech_api.repository.GerenteCursosRepository;
 
 @ExtendWith(MockitoExtension.class)
-class GerenteCursosServiceTest {
+public class GerenteCursosServiceTest {
 
+    /*crea las maquetas de los repositorios
+    */
     @Mock
     private CursoRepository cursoRepository;
 

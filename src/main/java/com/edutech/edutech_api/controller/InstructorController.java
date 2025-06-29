@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edutech.edutech_api.model.Instructor;
 import com.edutech.edutech_api.model.Pregunta;
 import com.edutech.edutech_api.model.Respuesta;
-import com.edutech.edutech_api.model.Rol;
 import com.edutech.edutech_api.repository.InstructorRepository;
 import com.edutech.edutech_api.repository.PreguntaRepository;
 import com.edutech.edutech_api.repository.RespuestaRepository;
@@ -28,7 +27,6 @@ import com.edutech.edutech_api.model.Evaluacion;
 import com.edutech.edutech_api.service.InstructorService;
 import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.model.Curso;
-import com.edutech.edutech_api.dto.InstructorDTO;
 
 import jakarta.validation.Valid;
 

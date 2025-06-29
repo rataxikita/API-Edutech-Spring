@@ -7,10 +7,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import com.edutech.edutech_api.model.UsuarioCurso;
-import com.edutech.edutech_api.model.Administrador;
-import com.edutech.edutech_api.model.Instructor;
 import com.edutech.edutech_api.model.Alumno;
-import com.edutech.edutech_api.model.GerenteCursos;
 import com.edutech.edutech_api.repository.UsuarioCursoRepository;
 import com.edutech.edutech_api.repository.AdministradorRepository;
 import com.edutech.edutech_api.repository.InstructorRepository;
