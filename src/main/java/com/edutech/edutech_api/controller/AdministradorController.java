@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.edutech.edutech_api.model.Alumno;
+import com.edutech.edutech_api.model.Administrador;
 import com.edutech.edutech_api.model.GerenteCursos;
 import com.edutech.edutech_api.model.Soporte;
 import com.edutech.edutech_api.service.AdministradorService;
@@ -27,8 +28,9 @@ public class AdministradorController {
     @PostMapping("/alumnos")
     public ResponseEntity<?> crearAlumno(@Valid @RequestBody Alumno alumno) {
         try {
-            // Simular usuario autenticado (en producción esto vendría del contexto de seguridad)
-            administradorService.setUsuarioAutenticado(1L); // ID del administrador autenticado
+            // Traer cualquier administrado
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             
             Alumno nuevoAlumno = administradorService.crearAlumno(alumno);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoAlumno);
@@ -42,8 +44,9 @@ public class AdministradorController {
     @PostMapping("/gerentes")
     public ResponseEntity<?> crearGerente(@Valid @RequestBody GerenteCursosDTO gerenteDTO) {
         try {
-            // Simular usuario autenticado (en producción esto vendría del contexto de seguridad)
-            administradorService.setUsuarioAutenticado(1L); // ID del administrador autenticado
+            // Traer cualquier administrador
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             
             // Crear gerente desde DTO
             GerenteCursos gerente = new GerenteCursos();
@@ -64,8 +67,9 @@ public class AdministradorController {
     @PostMapping("/soporte")
     public ResponseEntity<?> crearSoporte(@Valid @RequestBody Soporte soporte) {
         try {
-            // Simular usuario autenticado (en producción esto vendría del contexto de seguridad)
-            administradorService.setUsuarioAutenticado(1L); // ID del administrador autenticado
+            // Traer cualquier administrador
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             
             Soporte nuevoSoporte = administradorService.crearSoporte(soporte);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoSoporte);
@@ -75,11 +79,25 @@ public class AdministradorController {
         }
     }
 
+    @PostMapping("/administradores")
+    public ResponseEntity<?> crearAdministrador(@Valid @RequestBody Administrador administrador) {
+        try {
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
+            Administrador nuevoAdministrador = administradorService.crearAdministrador(administrador.getCorreo(), administrador.getClave(), administrador.getNombre());
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoAdministrador);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error al crear administrador: " + e.getMessage());
+        }
+    }
+
     // Gestión de usuarios existentes
     @GetMapping("/alumnos")
     public ResponseEntity<?> listarAlumnos() {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             List<Alumno> alumnos = administradorService.listarAlumnos();
             return ResponseEntity.ok(alumnos);
         } catch (Exception e) {
@@ -91,7 +109,8 @@ public class AdministradorController {
     @GetMapping("/gerentes")
     public ResponseEntity<?> listarGerentes() {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             List<GerenteCursos> gerentes = administradorService.listarGerentes();
             return ResponseEntity.ok(gerentes);
         } catch (Exception e) {
@@ -103,7 +122,8 @@ public class AdministradorController {
     @GetMapping("/soporte")
     public ResponseEntity<?> listarSoporte() {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             List<Soporte> soporte = administradorService.listarSoporte();
             return ResponseEntity.ok(soporte);
         } catch (Exception e) {
@@ -115,7 +135,8 @@ public class AdministradorController {
     @GetMapping("/alumnos/{id}")
     public ResponseEntity<?> obtenerAlumno(@PathVariable Long id) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             Alumno alumno = administradorService.buscarAlumnoPorId(id);
             if (alumno == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -131,7 +152,8 @@ public class AdministradorController {
     @GetMapping("/gerentes/{id}")
     public ResponseEntity<?> obtenerGerente(@PathVariable Long id) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             GerenteCursos gerente = administradorService.buscarGerentePorId(id);
             if (gerente == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -147,7 +169,8 @@ public class AdministradorController {
     @GetMapping("/soporte/{id}")
     public ResponseEntity<?> obtenerSoporte(@PathVariable Long id) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             Soporte soporte = administradorService.buscarSoportePorId(id);
             if (soporte == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -163,7 +186,8 @@ public class AdministradorController {
     @PutMapping("/alumnos/{id}")
     public ResponseEntity<?> actualizarAlumno(@PathVariable Long id, @Valid @RequestBody Alumno alumno) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             Alumno alumnoActualizado = administradorService.actualizarAlumno(id, alumno);
             return ResponseEntity.ok(alumnoActualizado);
         } catch (Exception e) {
@@ -175,7 +199,8 @@ public class AdministradorController {
     @PutMapping("/gerentes/{id}")
     public ResponseEntity<?> actualizarGerente(@PathVariable Long id, @Valid @RequestBody GerenteCursosDTO gerenteDTO) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             
             // Crear gerente desde DTO
             GerenteCursos gerente = new GerenteCursos();
@@ -195,7 +220,8 @@ public class AdministradorController {
     @PutMapping("/soporte/{id}")
     public ResponseEntity<?> actualizarSoporte(@PathVariable Long id, @Valid @RequestBody Soporte soporte) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             Soporte soporteActualizado = administradorService.actualizarSoporte(id, soporte);
             return ResponseEntity.ok(soporteActualizado);
         } catch (Exception e) {
@@ -208,7 +234,8 @@ public class AdministradorController {
     @DeleteMapping("/alumnos/{id}")
     public ResponseEntity<?> eliminarAlumno(@PathVariable Long id) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             administradorService.eliminarAlumno(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
@@ -220,7 +247,8 @@ public class AdministradorController {
     @DeleteMapping("/gerentes/{id}")
     public ResponseEntity<?> eliminarGerente(@PathVariable Long id) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             administradorService.eliminarGerenteCursos(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
@@ -232,7 +260,8 @@ public class AdministradorController {
     @DeleteMapping("/soporte/{id}")
     public ResponseEntity<?> eliminarSoporte(@PathVariable Long id) {
         try {
-            administradorService.setUsuarioAutenticado(1L);
+            Administrador admin = administradorService.traerCualquierAdministrador();
+            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
             administradorService.eliminarSoporte(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {

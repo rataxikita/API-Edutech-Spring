@@ -3,7 +3,8 @@ package com.edutech.edutech_api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,14 +20,11 @@ public class AlumnoController {
     @Autowired
     private AlumnoService alumnoService;
 
-    /*
+    
     @PostMapping("/crear")
-    public String almacenar(@RequestBody Alumno alumno){
-        // ESTE ENDPOINT HA SIDO DESHABILITADO
-        // SOLO EL ADMINISTRADOR PUEDE CREAR ALUMNOS
-        return "Acceso denegado. Solo los administradores pueden crear alumnos. Use /api/administrador/alumnos";
-    }
-    */
+    public String crearAlumno(@RequestBody Alumno alumno){
+        return alumnoService.crearAlumno(alumno);
+    }   
     
     @GetMapping
     public List<Alumno> listar(){

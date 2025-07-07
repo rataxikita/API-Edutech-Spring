@@ -203,4 +203,18 @@ public class AdministradorService {
             throw new RuntimeException("Usuario deshabilitado");
         }
     }
+
+
+    public Administrador crearAdministrador(String correo, String clave, String nombre) {
+        Administrador administrador = new Administrador();
+        administrador.setCorreo(correo);
+        administrador.setNombre(nombre);
+        administrador.setClave(clave);
+        administrador.setRol(Rol.ADMINISTRADOR);
+        return administradorRepository.save(administrador);
+    }
+    
+    public Administrador traerCualquierAdministrador(){
+        return administradorRepository.findAll().get(0);
+    }
 } 
