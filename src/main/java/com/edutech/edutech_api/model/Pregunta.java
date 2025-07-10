@@ -1,6 +1,7 @@
 // Catalina Rosales->rataxikita
 package com.edutech.edutech_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,13 +21,16 @@ public class Pregunta {
     // Solo relación con Alumno (quien hace la pregunta) e Instructor (quien responde)
     @ManyToOne
     @JoinColumn(name = "alumno_id")
+    @JsonIgnore
     private Alumno alumno;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id")
+    @JsonIgnore
     private Instructor instructor;
 
     @ManyToOne
+    @JsonIgnore
     private Curso curso;
 
     private String contenido;

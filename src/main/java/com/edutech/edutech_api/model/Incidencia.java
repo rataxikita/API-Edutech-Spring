@@ -1,5 +1,6 @@
 package com.edutech.edutech_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,10 +24,12 @@ public class Incidencia {
 
     @ManyToOne
     @JoinColumn(name = "alumno_id")
+    @JsonIgnore
     private Alumno alumno;
 
     @ManyToOne
     @JoinColumn(name = "soporte_id")
+    @JsonIgnore
     private Soporte soporte;
 
     public Incidencia(){

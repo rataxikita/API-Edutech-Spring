@@ -20,6 +20,7 @@ import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.repository.EvaluacionRepository;
 import com.edutech.edutech_api.repository.ContenidoRepository;
 import com.edutech.edutech_api.repository.PreguntaRepository;
+import com.edutech.edutech_api.dto.InstructorListDTO;
 
 @Service
 public class InstructorService {
@@ -41,8 +42,11 @@ public class InstructorService {
     public Instructor crearInstructor(Instructor instructor){
         return instructorRepository.save(instructor);
     }
-    public List<Instructor> obtenerTodos(){
-        return instructorRepository.findAll();
+    public List<InstructorListDTO> obtenerTodos(){
+        return instructorRepository.findAll()
+            .stream()
+            .map(this::convertirAInstructorDTO)
+            .collect(java.util.stream.Collectors.toList());
     } 
     public Instructor obtenerPorId(Long id){
         return instructorRepository.findById(id).orElse(null);
@@ -141,6 +145,19 @@ public class InstructorService {
             .mapToDouble(inscripcion -> Double.parseDouble(inscripcion.getProgreso().replace("%", "")))
             .average()
             .orElse(0.0);
+    }
+
+    // Método de conversión a DTO
+    private InstructorListDTO convertirAInstructorDTO(Instructor instructor) {
+        return new InstructorListDTO(
+            instructor.getId(),
+            instructor.getNombre(),
+            instructor.getApellido(),
+            instructor.getCorreo(),
+            instructor.getRut(),
+            instructor.isEstado(),
+            instructor.getRol().toString()
+        );
     }
 }
 // Catalina Rosales->rataxikita

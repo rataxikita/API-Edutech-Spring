@@ -2,6 +2,7 @@
 
 package com.edutech.edutech_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,10 +23,12 @@ public class UsuarioCurso {
     // Campos para diferentes tipos de usuarios - todos nullable
     @ManyToOne
     @JoinColumn(name = "administrador_id", nullable = true)
+    @JsonIgnore
     private Administrador administrador;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", nullable = true)
+    @JsonIgnore
     private Instructor instructor;
 
     @ManyToOne
@@ -34,6 +37,7 @@ public class UsuarioCurso {
 
     @ManyToOne
     @JoinColumn(name = "gerente_cursos_id", nullable = true)
+    @JsonIgnore
     private GerenteCursos gerenteCursos;
 
     @ManyToOne

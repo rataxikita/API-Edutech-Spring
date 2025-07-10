@@ -2,6 +2,7 @@
 
 package com.edutech.edutech_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -35,15 +36,19 @@ public class Curso {
 
     @ManyToOne
     @JoinColumn(name = "instructor_id")
+    @JsonIgnore
     private Instructor instructor;
 
     @OneToMany(mappedBy = "curso")
+    @JsonIgnore
     private List<Evaluacion> evaluaciones;
 
     @OneToMany(mappedBy = "curso")
+    @JsonIgnore
     private List<Pregunta> preguntas;
 
     @OneToMany(mappedBy = "curso")
+    @JsonIgnore
     private List<UsuarioCurso> inscritos;
 
     public Curso() {}

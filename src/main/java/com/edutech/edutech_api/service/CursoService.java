@@ -3,7 +3,7 @@ package com.edutech.edutech_api.service;
 
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +18,11 @@ public class CursoService {
     private CursoRepository cursoRepository;
 
     // Listar todos los cursos
-    public List<Curso> listarCursos() {
-        return cursoRepository.findAll();
+    public List<CursoDTO> listarCursos() {
+        return cursoRepository.findAll()
+            .stream()
+            .map(this::convertirACursoDTO)
+            .collect(Collectors.toList());
     }
 
     // Crear curso desde DTO
@@ -61,6 +64,16 @@ public class CursoService {
             return cursoRepository.save(curso);
         }
         return null;
+    }
+
+    private CursoDTO convertirACursoDTO(Curso curso) {
+        CursoDTO dto = new CursoDTO();
+        dto.setSigla(curso.getSigla());
+        dto.setNombre(curso.getNombre());
+        dto.setDescripcion(curso.getDescripcion());
+        dto.setEstado(curso.isEstado());
+        dto.setValor(curso.getValor());
+        return dto;
     }
 }
 

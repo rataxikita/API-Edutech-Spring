@@ -6,8 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
-import java.util.List;
-
+import java.util.List;  
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +23,7 @@ import com.edutech.edutech_api.model.Soporte;
 import com.edutech.edutech_api.model.Rol;
 import com.edutech.edutech_api.service.AdministradorService;
 import com.edutech.edutech_api.dto.GerenteCursosDTO;
+import com.edutech.edutech_api.dto.AlumnoListDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -95,7 +95,8 @@ class AdministradorControllerTest {
     @Test
     void testListarAlumnos_Success() throws Exception {
         // Arrange
-        List<Alumno> alumnos = Arrays.asList(alumno);
+        AlumnoListDTO alumnoDTO = new AlumnoListDTO(1L, "Juan", "Pérez", "juan@test.com", true, "ESTUDIANTE");
+        List<AlumnoListDTO> alumnos = Arrays.asList(alumnoDTO);
         when(administradorService.listarAlumnos()).thenReturn(alumnos);
 
         // Act & Assert

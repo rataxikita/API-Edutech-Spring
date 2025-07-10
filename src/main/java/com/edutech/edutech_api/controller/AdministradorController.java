@@ -14,6 +14,8 @@ import com.edutech.edutech_api.model.GerenteCursos;
 import com.edutech.edutech_api.model.Soporte;
 import com.edutech.edutech_api.service.AdministradorService;
 import com.edutech.edutech_api.dto.GerenteCursosDTO;
+import com.edutech.edutech_api.dto.AlumnoListDTO;
+import com.edutech.edutech_api.dto.SoporteListDTO;
 
 import jakarta.validation.Valid;
 
@@ -82,23 +84,26 @@ public class AdministradorController {
     @PostMapping("/administradores")
     public ResponseEntity<?> crearAdministrador(@Valid @RequestBody Administrador administrador) {
         try {
-            Administrador admin = administradorService.traerCualquierAdministrador();
-            administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
-            Administrador nuevoAdministrador = administradorService.crearAdministrador(administrador.getCorreo(), administrador.getClave(), administrador.getNombre());
+            // Solo autentica si ya existe algún administrador
+            if (administradorService.hayAdministradores()) {
+                Administrador admin = administradorService.traerCualquierAdministrador();
+                administradorService.setUsuarioAutenticado(admin.getId());
+            }
+            Administrador nuevoAdministrador = administradorService.crearAdministrador(
+                administrador.getCorreo(), administrador.getClave(), administrador.getNombre());
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoAdministrador);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error al crear administrador: " + e.getMessage());
         }
     }
-
     // Gestión de usuarios existentes
     @GetMapping("/alumnos")
     public ResponseEntity<?> listarAlumnos() {
         try {
             Administrador admin = administradorService.traerCualquierAdministrador();
             administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
-            List<Alumno> alumnos = administradorService.listarAlumnos();
+            List<AlumnoListDTO> alumnos = administradorService.listarAlumnos();
             return ResponseEntity.ok(alumnos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -111,7 +116,7 @@ public class AdministradorController {
         try {
             Administrador admin = administradorService.traerCualquierAdministrador();
             administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
-            List<GerenteCursos> gerentes = administradorService.listarGerentes();
+            List<GerenteCursosDTO> gerentes = administradorService.listarGerentes();
             return ResponseEntity.ok(gerentes);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -124,7 +129,7 @@ public class AdministradorController {
         try {
             Administrador admin = administradorService.traerCualquierAdministrador();
             administradorService.setUsuarioAutenticado(admin.getId()); // ID del administrador autenticado
-            List<Soporte> soporte = administradorService.listarSoporte();
+            List<SoporteListDTO> soporte = administradorService.listarSoporte();
             return ResponseEntity.ok(soporte);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)

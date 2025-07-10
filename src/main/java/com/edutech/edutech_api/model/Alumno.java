@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
@@ -21,6 +20,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "alumnos")
+
 public class Alumno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,6 +54,7 @@ public class Alumno {
     @OneToMany(mappedBy = "alumno")
     private List<Incidencia> incidencias = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "alumno")
     private List<UsuarioCurso> inscripciones;
 

@@ -1,6 +1,7 @@
 // Catalina Rosales->rataxikita
 package com.edutech.edutech_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,9 +16,11 @@ public class Respuesta {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     private Instructor instructor;
 
     @ManyToOne
+    @JsonIgnore
     private Pregunta pregunta;
 
     private String contenido;

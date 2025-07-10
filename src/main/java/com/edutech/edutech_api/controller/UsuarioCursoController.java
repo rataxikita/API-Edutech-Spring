@@ -13,6 +13,7 @@ import com.edutech.edutech_api.repository.AdministradorRepository;
 import com.edutech.edutech_api.repository.InstructorRepository;
 import com.edutech.edutech_api.repository.AlumnoRepository;
 import com.edutech.edutech_api.repository.GerenteCursosRepository;
+import com.edutech.edutech_api.dto.UsuarioCursoDTO;
 
 import java.util.*;
 
@@ -37,33 +38,57 @@ public class UsuarioCursoController {
 
     @PostMapping("/inscribir")
     public ResponseEntity<?> inscribir(@RequestBody UsuarioCurso uc) {
-        // Buscar el usuario en todas las entidades
-        Object usuario = buscarUsuarioPorId(uc);
+        // Debug de los datos recibidos
+        System.out.println("UsuarioCurso recibido: " + uc);
+        System.out.println("Alumno: " + (uc.getAlumno() != null ? uc.getAlumno().getId() : "null"));
+        System.out.println("Curso: " + (uc.getCurso() != null ? uc.getCurso().getSigla() : "null"));
+
+        // Validar que se proporcionen los datos necesarios
+        if (uc.getAlumno() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("No se proporcionó información del alumno");
+        }
+
+        if (uc.getAlumno().getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Se requiere un ID de alumno válido");
+        }
         
-        if (usuario == null) {
+        if (uc.getCurso() == null || uc.getCurso().getSigla() == null || uc.getCurso().getSigla().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Se requiere una sigla de curso válida");
+        }
+
+        Long alumnoId = uc.getAlumno().getId();
+        
+        // Buscar el alumno directamente
+        Alumno alumno = alumnoRepo.findById(alumnoId).orElse(null);
+        
+        if (alumno == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Usuario no encontrado");
+                .body("Alumno con ID " + alumnoId + " no encontrado");
         }
             
-        // Validar que sea estudiante (Alumno)
-        if (!(usuario instanceof Alumno)) {
+        // Validar que el alumno esté activo
+        if (!alumno.isEstado()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body("Solo los estudiantes pueden inscribirse en cursos");
+                .body("El alumno está deshabilitado");
         }
 
         // Validar que no esté ya inscrito en el mismo curso
         List<UsuarioCurso> existentes = usuarioCursoRepo.findByAlumnoIdAndCursoSigla(
-            ((Alumno) usuario).getId(),
+            alumnoId,
             uc.getCurso().getSigla()
         );
 
         if (!existentes.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya estás inscrito en este curso");
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("El alumno ya está inscrito en el curso " + uc.getCurso().getSigla());
         }
 
         // Crear nueva inscripción
         UsuarioCurso nuevaInscripcion = new UsuarioCurso();
-        nuevaInscripcion.setAlumno((Alumno) usuario);
+        nuevaInscripcion.setAlumno(alumno);
         nuevaInscripcion.setCurso(uc.getCurso());
         nuevaInscripcion.setFechaInscripcion(new Date().toString());
         nuevaInscripcion.setProgreso("0%");
@@ -79,7 +104,21 @@ public class UsuarioCursoController {
         }
 
         List<UsuarioCurso> lista = usuarioCursoRepo.findByUsuarioId(usuarioId);
-        return ResponseEntity.ok(lista);
+        List<UsuarioCursoDTO> dtos = new ArrayList<>();
+
+        for (UsuarioCurso uc : lista) {
+            UsuarioCursoDTO dto = new UsuarioCursoDTO();
+            dto.setId(uc.getId());
+            dto.setNombreAlumno(uc.getAlumno() != null ? 
+                uc.getAlumno().getNombre() + " " + uc.getAlumno().getApellidos() : "");
+            dto.setSiglaCurso(uc.getCurso().getSigla());
+            dto.setNombreCurso(uc.getCurso().getNombre());
+            dto.setFechaInscripcion(uc.getFechaInscripcion());
+            dto.setProgreso(uc.getProgreso());
+            dtos.add(dto);
+        }
+
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/usuario/{usuarioId}/progreso")
@@ -102,21 +141,19 @@ public class UsuarioCursoController {
         return ResponseEntity.ok(progreso);
     }
 
-    private Object buscarUsuarioPorId(UsuarioCurso uc) {
+    private Object buscarUsuarioPorId(Long usuarioId) {
         // Buscar en todas las entidades de usuario
-        if (uc.getAdministrador() != null) {
-            return administradorRepo.findById(uc.getAdministrador().getId()).orElse(null);
-        }
-        if (uc.getInstructor() != null) {
-            return instructorRepo.findById(uc.getInstructor().getId()).orElse(null);
-        }
-        if (uc.getAlumno() != null) {
-            return alumnoRepo.findById(uc.getAlumno().getId()).orElse(null);
-        }
-        if (uc.getGerenteCursos() != null) {
-            return gerenteCursosRepo.findById(uc.getGerenteCursos().getId()).orElse(null);
-        }
-        return null;
+        Object usuario = administradorRepo.findById(usuarioId).orElse(null);
+        if (usuario != null) return usuario;
+
+        usuario = instructorRepo.findById(usuarioId).orElse(null);
+        if (usuario != null) return usuario;
+
+        usuario = alumnoRepo.findById(usuarioId).orElse(null);
+        if (usuario != null) return usuario;
+
+        usuario = gerenteCursosRepo.findById(usuarioId).orElse(null);
+        return usuario;
     }
 
     private boolean usuarioExiste(Long usuarioId) {

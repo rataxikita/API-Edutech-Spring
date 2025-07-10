@@ -1,5 +1,6 @@
 // Catalina Rosales->rataxikita
 package com.edutech.edutech_api.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,7 @@ public class Evaluacion {
 
     @ManyToOne
     @JoinColumn(name = "curso_id")
+    @JsonIgnore
     private Curso curso;
 
     private String titulo;

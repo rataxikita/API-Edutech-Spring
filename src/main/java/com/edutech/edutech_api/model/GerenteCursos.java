@@ -1,5 +1,7 @@
 package com.edutech.edutech_api.model;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,6 +45,7 @@ public class GerenteCursos {
     @Column(name = "rol")
     private Rol rol = Rol.GERENTE_CURSOS;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "gerenteCursos")
     private List<UsuarioCurso> inscripciones;
 

@@ -1,6 +1,7 @@
 //Anais Llancapan- peitou1
 package com.edutech.edutech_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -23,9 +24,11 @@ public class Resena {
     // Solo relación con Alumno ya que solo los alumnos pueden crear reseñas
     @ManyToOne
     @JoinColumn(name = "alumno_id")
+    @JsonIgnore
     private Alumno alumno;
 
     @ManyToOne
+    @JsonIgnore
     private Curso curso;
 
     // Getters y Setters

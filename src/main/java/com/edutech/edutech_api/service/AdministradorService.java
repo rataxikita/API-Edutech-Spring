@@ -13,8 +13,12 @@ import com.edutech.edutech_api.repository.AdministradorRepository;
 import com.edutech.edutech_api.repository.AlumnoRepository;
 import com.edutech.edutech_api.repository.GerenteCursosRepository;
 import com.edutech.edutech_api.repository.SoporteRepository;
+import com.edutech.edutech_api.dto.AlumnoListDTO;
+import com.edutech.edutech_api.dto.GerenteCursosDTO;
+import com.edutech.edutech_api.dto.SoporteListDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdministradorService {
@@ -80,19 +84,28 @@ public class AdministradorService {
     }
 
     // Gestión de usuarios existentes
-    public List<Alumno> listarAlumnos() {
+    public List<AlumnoListDTO> listarAlumnos() {
         validarPermisosAdministrador();
-        return alumnoRepository.findAll();
+        return alumnoRepository.findAll()
+            .stream()
+            .map(this::convertirAAlumnoDTO)
+            .collect(Collectors.toList());
     }
 
-    public List<GerenteCursos> listarGerentes() {
+    public List<GerenteCursosDTO> listarGerentes() {
         validarPermisosAdministrador();
-        return gerenteCursosRepository.findAll();
+        return gerenteCursosRepository.findAll()
+            .stream()
+            .map(this::convertirAGerenteDTO)
+            .collect(Collectors.toList());
     }
 
-    public List<Soporte> listarSoporte() {
+    public List<SoporteListDTO> listarSoporte() {
         validarPermisosAdministrador();
-        return soporteRepository.findAll();
+        return soporteRepository.findAll()
+            .stream()
+            .map(this::convertirASoporteDTO)
+            .collect(Collectors.toList());
     }
 
     public Alumno buscarAlumnoPorId(Long id) {
@@ -216,5 +229,37 @@ public class AdministradorService {
     
     public Administrador traerCualquierAdministrador(){
         return administradorRepository.findAll().get(0);
+    }
+
+    public boolean hayAdministradores() {
+        return !administradorRepository.findAll().isEmpty();
+    }
+
+    // Métodos de conversión a DTOs
+    private AlumnoListDTO convertirAAlumnoDTO(Alumno alumno) {
+        return new AlumnoListDTO(
+            alumno.getId(),
+            alumno.getNombre(),
+            alumno.getApellidos(),
+            alumno.getCorreo(),
+            alumno.isEstado(),
+            alumno.getRol().toString()
+        );
+    }
+
+    private GerenteCursosDTO convertirAGerenteDTO(GerenteCursos gerente) {
+        return new GerenteCursosDTO(
+            gerente.getNombre(),
+            gerente.getCorreo(),
+            gerente.getClave(),
+            gerente.isEstado()
+        );
+    }
+
+    private SoporteListDTO convertirASoporteDTO(Soporte soporte) {
+        return new SoporteListDTO(
+            soporte.getId(),
+            soporte.getNombreSoporte()
+        );
     }
 } 

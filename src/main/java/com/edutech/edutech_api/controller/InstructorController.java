@@ -27,6 +27,7 @@ import com.edutech.edutech_api.model.Evaluacion;
 import com.edutech.edutech_api.service.InstructorService;
 import com.edutech.edutech_api.repository.CursoRepository;
 import com.edutech.edutech_api.model.Curso;
+import com.edutech.edutech_api.dto.InstructorListDTO;
 
 import jakarta.validation.Valid;
 
@@ -63,9 +64,9 @@ public class InstructorController {
     */
 
     @GetMapping
-    public ResponseEntity<List<Instructor>> listar() {
+    public ResponseEntity<List<InstructorListDTO>> listar() {
         try {
-            List<Instructor> instructores = instructorRepo.findAll();
+            List<InstructorListDTO> instructores = instructorService.obtenerTodos();
             return ResponseEntity.ok(instructores);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -37,7 +37,7 @@ public class CursoController {
 
     //Listar cursos
     @GetMapping
-    public ResponseEntity<List<Curso>> listarCursos() {
+    public ResponseEntity<List<CursoDTO>> listarCursos() {
         return ResponseEntity.ok(cursoService.listarCursos());
     }
 
